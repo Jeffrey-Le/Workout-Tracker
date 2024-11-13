@@ -49,6 +49,9 @@ function authenticateToken(req, res, next) {
 }
 
 // Routes
+const cors = require('cors');
+app.use(cors());
+
 
 // Home route
 app.get("/", (req, res) => {
