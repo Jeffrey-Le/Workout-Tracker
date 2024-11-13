@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activities</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Activity Tracking</h1>
+    <p>Thursday, 22 Sep</p>
+  </div>
+
+  <button class="add-button">+</button>
+
+  <div class="calendar">
+    <!-- Days of the week -->
+    <div class="day">Sun</div>
+    <div class="day">Mon</div>
+    <div class="day">Tue</div>
+    <div class="day">Wed</div>
+    <div class="day">Thu</div>
+    <div class="day">Fri</div>
+    <div class="day">Sat</div>
+
+    <!-- Dates below each day -->
+    <div class="date">18</div>
+    <div class="date">19</div>
+    <div class="date">20</div>
+    <div class="date">21</div>
+    <div class="date selected">22</div>
+    <div class="date">23</div>
+    <div class="date">24</div>
+  </div>
+
+  <!-- Line graph section -->
+  <div class="graph-container">
+    <canvas id="activityChart" width="300" height="150"></canvas>
+  </div>
+
+  <!-- Info sections -->
+  <div class="info-box">
+    <h2>Total Time</h2>
+    <p>2 h 45 m</p>
+  </div>
+
+  <div class="info-box">
+    <h2>Total Distance</h2>
+    <p>10 km</p>
+  </div>
+
+  <div class="info-box">
+    <h2>Average Speed</h2>
+    <p>6.1 p/km</p>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
