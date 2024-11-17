@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 // REQUIRE ROUTES
 const UserRoutes = require("./routes/userRoutes");
 const WorkoutRoutes = require("./routes/workoutRoutes");
+const ReminderRoutes = require("./routes/reminderRoutes");
 
 // TEST: console.log(dotenv);
 
@@ -32,5 +33,6 @@ app.use((err, req, res, next) => {
 
 app.use("/api/users", UserRoutes);
 app.use("/api/workouts", WorkoutRoutes);
+app.use("/api/reminders", ReminderRoutes);
 
 module.exports = app;

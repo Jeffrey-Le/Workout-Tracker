@@ -19,6 +19,7 @@ class WorkoutModel extends Model {
         }
     }
 
+
     /**
      * @param {Date} date - Contains date
      * @returns {Promise<Object | undefined>} - Returns an object list of workouts and data relating to them for the user based on the date created
