@@ -49,6 +49,8 @@ With the Cloud SQL Auth Proxy running, you can now connect to the database.
   psql -h localhost -U test_user -d workout_tracker_test
   ```
 
+TIP: The database name is case-sensitive. However, uppercase database names are converted to lowercase letters when creating a database.
+
 - **Through the API**: Ensure your backend API is set up to read database connection details from `.env`.
 
 ---
