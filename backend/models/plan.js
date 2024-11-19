@@ -1,4 +1,4 @@
-import { Model } from ".";
+const Model = require('./index');
 
 class PlanModel extends Model {
   static tableName = 'plans';
@@ -33,41 +33,4 @@ class PlanModel extends Model {
 
 }
 
-const PlanModel = {
-    id: {
-      type: INTEGER,
-      serial: true,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    user_id: {
-        type: INTEGER,
-        FOREIGEN_KEY: true,
-        REF: users(users_id),
-    },
-    email: {
-      type: STRING,
-      unique: true,
-      allowNull: false,
-    },
-    plan_name: {
-        type: STRING,
-        allowNull: false,
-    },
-    created_at: {
-        type: DATETIME,
-        default: true
-    }
-  };
-
-
-// If using sequalize
-// module.exports = {
-// initialize: (sequelize) => {
-//     this.model = sequelize.define("user", UserModel);
-// },
-
-// createUser: (user) => {
-//     return this.model.create(user);
-// }
-// };
+module.exports = PlanModel;

@@ -47,4 +47,4 @@ class BmiHistoryModel extends Model {
     }
 }
 
-module.exports = BmiModel;
+module.exports = BmiHistoryModel;
