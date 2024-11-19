@@ -1,0 +1,85 @@
+body {
+  background-color: #121212; /* Dark background */
+  color: #e0e0e0; /* Light text color for contrast */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  width: 360px;
+  padding: 20px;
+  background-color: #1e1e2e;
+  border-radius: 20px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.header h1 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.header p {
+  font-size: 14px;
+  color: #a0a0b0;
+}
+
+.add-button {
+  background-color: #3a3a5a;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 columns for each day */
+  gap: 10px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.calendar .day {
+  color: #a0a0b0;
+  font-size: 14px;
+}
+
+.calendar .date {
+  color: #e0e0e0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.calendar .date.selected {
+  background-color: #5050a0;
+  color: #ffffff;
+  border-radius: 50%;
+  padding: 5px 0;
+}
+
+.info-box {
+  background-color: #2a2a3a;
+  padding: 15px;
+  border-radius: 15px;
+  color: #ffffff;
+  margin-top: 20px;
+}
+
+.info-box h2 {
+  color: #ffffff;
+}
+
+.time-bar .selected,
+.speed-bar div:last-child {
+  background-color: #5050a0;
+}
+
+.circle {
+  background: conic-gradient(#5050a0 56%, #2a2a3a 56%);
+}
