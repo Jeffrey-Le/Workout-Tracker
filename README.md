@@ -13,13 +13,31 @@ npm install jsonwebtoken
 npm install cors
 ```
 
-## 2. Set up test tool
+## 2. Set up the database
+
+Install PostgreSQL: Download and install PostgreSQL from PostgreSQL Download Page.
+
+Create the database: Run the following commands in the psql terminal.
+```
+CREATE DATABASE workoutdb OWNER "35LbsAdmin";
+```
+Run the SQL schema: Execute the provided workoutDB-Setup.sql file to create tables and indexes.
+```
+psql -U 35LbsAdmin -d workoutdb -f workoutDB-Setup.sql
+```
+Verify tables: After running the schema, connect to the database and list tables.
+```
+psql -U 35LbsAdmin -d workoutdb
+\dt
+```
+
+## 3. Set up test tool
 
 Download Postman from [Postman Download Page](https://www.postman.com/downloads/)
 
-## 3. Test Result
+## 4. Test Result
 
-### 3.1 User Registration
+### 4.1 User Registration
 
 1. **Run the server**:
    ```sh
@@ -51,3 +69,5 @@ Download Postman from [Postman Download Page](https://www.postman.com/downloads/
      ```
      201 Created: "User registered successfully."
      ```
+
+     
