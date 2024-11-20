@@ -8,6 +8,7 @@ import Dashboard from './pages/dashboard';
 import LogWorkout from './pages/log_workout';
 
 import './styles.css';
+import Profile from './pages/profile';
 
 // Create a wrapper component for the sidebar to use useNavigate
 const Sidebar = () => {
@@ -59,7 +60,7 @@ const Sidebar = () => {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/log-workout" element={<LogWorkout />} />
-              <Route path="/profile" element={<div>Profile Page</div>} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/history" element={<div>History Page</div>} />
             </Routes>
           </div>
