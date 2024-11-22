@@ -10,7 +10,12 @@ class ReminderController {
      */
     static async addReminder(res, req) {
         try {
-            const reminderData = req.body;
+            const {reminderDate, message} = req.body;
+
+            const reminderData = {};
+
+            if (reminderDate) reminderData.reminder_date = reminderDate;
+            if (message) reminderData.message = message;
 
             const newReminder = ReminderModel.createReminder(reminderData);
 
@@ -99,9 +104,17 @@ class ReminderController {
      */
     static async updateReminderByID(req, res) {
         try {
-            const newReminderData = req.body;
+            const {id, reminderDate, message} = req.body;
 
-            const updatedReminder = ReminderModel.updateReminder(newReminderData.id, newReminderData.data);
+            if (typeof id !== "number" || !id)
+                return res.status(400).json({message: "Invalid ID"});
+
+            const newReminderData = {};
+
+            if (reminderDate) newReminderData.reminder_date = reminderDate;
+            if (message) newReminderData.message = message;
+
+            const updatedReminder = ReminderModel.updateReminder(id, newReminderData);
 
             if (updatedReminder)
                 res.status(200).json(updatedReminder);

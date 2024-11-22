@@ -9,11 +9,27 @@ class WorkoutController {
      */
     static async addWorkout(req, res) {
         try {
-            const workoutData = req.body;
+            const {workoutType, duration, distance, caloriesBurned, sets, reps, weightUsed, workoutDate, details} = req.body;
+
+            const workoutData = {};
+
+            // Check existence of a certain data that can be added.
+            if (workoutType) workoutData.workout_type = workoutType;
+            if (duration) workoutData.duration = duration;
+            if (distance) workoutData.distance = distance;
+            if (caloriesBurned) workoutData.calories_burned = caloriesBurned;
+            if (sets) workoutData.sets = sets;
+            if (reps) workoutData.reps = reps;
+            if (weightUsed) workoutData.weight_used = weightUsed;
+            if (workoutDate) workoutData.workout_date = workoutDate;
+            if (details) workoutData.details = details;
 
             const newWorkout = WorkoutModel.createWorkout(workoutData);
 
-            return res.status(200).json(newWorkout);
+            if (newWorkout)
+                res.status(200).json(newWorkout);
+            else
+                res.status(404).json({ message: 'Workout cannot be created.' });
         }
         catch (err) {
             return res.status(500).json({ error: err.message });
@@ -29,7 +45,6 @@ class WorkoutController {
     static async getWorkout(req, res) {
         try {
 
-            return res.status(200).json({message: "successful call request"})
             const { id } = req.params;
 
             const workout = WorkoutModel.findOneById(id);
@@ -98,9 +113,27 @@ class WorkoutController {
      */
     static async updateWorkoutByID(req, res) {
         try {
-            const newWorkoutData = req.body;
+            const {id, workoutType, duration, distance, caloriesBurned, sets, reps, weightUsed, workoutDate, details} = req.body;
 
-            const updatedWorkout = WorkoutModel.updateWorkout(newWorkoutData.id, newWorkoutData.data);
+            if (typeof id !== "number" || !id)
+                return res.status(400).json({message: "Invalid ID"});
+
+            const newWorkoutData = {};
+
+
+            // Check existence of a certain data that can be updated.
+            if (workoutType) newWorkoutData.workout_type = workoutType;
+            if (duration) newWorkoutData.duration = duration;
+            if (distance) newWorkoutData.distance = distance;
+            if (caloriesBurned) newWorkoutData.calories_burned = caloriesBurned;
+            if (sets) newWorkoutData.sets = sets;
+            if (reps) newWorkoutData.reps = reps;
+            if (weightUsed) newWorkoutData.weight_used = weightUsed;
+            if (workoutDate) newWorkoutData.workout_date = workoutDate;
+            if (details) newWorkoutData.details = details;
+           
+
+            const updatedWorkout = WorkoutModel.updateWorkout(id, newWorkoutData);
 
             if (updatedWorkout)
                 res.status(200).json(updatedWorkout);

@@ -11,8 +11,7 @@ class PlanController {
         try {
             const {planName} = req.body;
 
-            if (!planName)
-                return res.status(404).json({message: "Insufficient data sent."});
+            if (!planName) return res.status(404).json({message: "Insufficient data sent."});
 
             const planData = {
                 "plan_name": planName,
@@ -106,12 +105,11 @@ class PlanController {
             const {id, planName} = req.body;
 
             if (typeof id !== "number" || !id)
-                return res.status(404).json({message: "Insufficient data sent. Possible Invalid ID."});
+                return res.status(400).json({message: "Insufficient data sent. Possible Invalid ID."});
 
             const newPlanData = {};
 
-            if (planName)
-                newPlanData.plan_name = planName;
+            if (planName) newPlanData.plan_name = planName;
 
             const updatedPlan = PlanModel.updatePlan(id, newPlanData);
 

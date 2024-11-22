@@ -113,20 +113,20 @@ class BmiHistoryController {
             const {id, weight, height, bmi} = req.body;
 
             if (typeof id !== "number" || !id)
-                return res.status(422).json({message: "Invalid ID"});
+                return res.status(400).json({message: "Invalid ID"});
 
-            const newPlanData = {};
+            const newBmiData = {};
 
             if (weight)
-                newPlanData.weight = weight;
+                newBmiData.weight = weight;
 
             if (height)
-                newPlanData.height = height;
+                newBmiData.height = height;
 
             if (bmi)
-                newPlanData.bmi = bmi;
+                newBmiData.bmi = bmi;
 
-            const updatedBmiEntry = BmiHistoryModel.updateBmi(id, newPlanData);
+            const updatedBmiEntry = BmiHistoryModel.updateBmi(id, newBmiData);
 
             if (updatedBmiEntry)
                 res.status(200).json(updatedBmiEntry);
