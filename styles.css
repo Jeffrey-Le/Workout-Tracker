@@ -10,12 +10,12 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f0f0f0;
+  background-color: #1e1e30; /* Dark background color from the theme */
   font-family: "Optima", sans-serif; /* Change font to Optima */
 }
 
 .form-container {
-  background-color: #6c928c;
+  background-color: #292946; /* Match the container background color */
   padding: 20px;
   border-radius: 8px;
   width: 300px;
@@ -23,19 +23,19 @@ body {
 }
 
 h2 {
-  color: #fff;
+  color: #ffffff; /* White text for better contrast */
   margin-bottom: 20px;
 }
 
 form {
-  background-color: #fff9e3;
+  background-color: #383850; /* Slightly lighter dark background */
   padding: 20px;
   border-radius: 8px;
 }
 
 label {
   display: block;
-  color: #8b2a22;
+  color: #a9aac4; /* Subtle gray for label text */
   margin-top: 10px;
   font-weight: bold;
   text-align: left;
@@ -46,13 +46,15 @@ input {
   padding: 8px;
   margin-top: 5px;
   margin-bottom: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #4a4a60; /* Muted border color */
   border-radius: 4px;
+  background-color: #2c2c42; /* Dark input background */
+  color: #ffffff; /* White input text */
 }
 
 button {
-  background-color: #6c928c;
-  color: #fff;
+  background-color: #5e5da5; /* Purple color matching the button style */
+  color: #ffffff;
   padding: 10px;
   border: none;
   border-radius: 4px;
@@ -63,5 +65,5 @@ button {
 }
 
 button:hover {
-  background-color: #5b7b75;
+  background-color: #4b4a88; /* Slightly darker purple on hover */
 }
