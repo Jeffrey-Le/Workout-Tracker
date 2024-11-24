@@ -5,7 +5,7 @@
 # Backend-to-Frontend Features
 
 ### **Overview**
-This folder contains examples of backend-to-frontend integration features. Each file is how specific backend endpoints can be used within frontend JavaScript code. These examples are designed to help teammates integrate backend logic into their respective frontend implementations efficiently. I will be using the search-workout.js to create the search feature for the website.
+This folder contains examples of backend-to-frontend integration features. Each file is how specific backend endpoints can be used within frontend JavaScript code. These examples are designed to help teammates integrate backend logic into their respective frontend implementations efficiently.
 
 ### **Folder Structure**
 - **`graphing-bmi.js`**: Provides functionality for fetching and displaying BMI graph data.
