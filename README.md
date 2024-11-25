@@ -46,6 +46,7 @@ Contains the core database setup and configuration files.
 
 ### 2. **backend-to-frontend-features Folder**
 Contains example files to assist frontend developers in integrating the backend functionality into their React components or other client-side frameworks.
+This folder also contains the knex equivalent js files so that they can work with our API, server, and backend setup.
 
 - **`README.md`**:
   - Explains how to use the example files in the folder.
@@ -66,6 +67,7 @@ Contains example files to assist frontend developers in integrating the backend 
   - Backend code to implement search functionality.
   - Includes:
     - **GET `/workouts/search`**: Search for workouts by date, type, or both.
+
 
 ---
 

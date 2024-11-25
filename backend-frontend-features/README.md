@@ -12,6 +12,8 @@ This folder contains examples of backend-to-frontend integration features. Each 
 - **`log-delete-workout.js`**: Demonstrates how to log and delete workout data using backend API endpoints.
 - **`search-workout.js`**: Contains the logic for searching workouts by date, type, or both.
 
+Including all of their knex equivalent files.
+
 ---
 
 ## **Integration Instructions**
