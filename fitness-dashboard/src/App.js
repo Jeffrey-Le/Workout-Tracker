@@ -6,9 +6,10 @@ import { Activity, Bike, LogOut, User, Calendar, Clock, BarChart2 } from 'lucide
 
 import Dashboard from './pages/dashboard'; 
 import LogWorkout from './pages/log_workout';
+import Search from './pages/search';
+import Profile from './pages/profile';
 
 import './styles.css';
-import Profile from './pages/profile';
 
 // Create a wrapper component for the sidebar to use useNavigate
 const Sidebar = () => {
@@ -37,9 +38,9 @@ const Sidebar = () => {
             <User className="icon" />
             <span>Profile</span>
           </Link>
-          <Link to="/history" className="nav-item">
+          <Link to="/search" className="nav-item">
             <Clock className="icon" />
-            <span>History</span>
+            <span>Search</span>
           </Link>
         </nav>
   
@@ -61,7 +62,7 @@ const Sidebar = () => {
               <Route path="/" element={<Dashboard />} />
               <Route path="/log-workout" element={<LogWorkout />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/history" element={<div>History Page</div>} />
+              <Route path="/search" element={<Search />} />
             </Routes>
           </div>
         </div>
