@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS reminders CASCADE;
+DROP TABLE IF EXISTS plans CASCADE;
+DROP TABLE IF EXISTS bmi_history CASCADE;
+DROP TABLE IF EXISTS workouts CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
 -- Users table with additional fields for BMI calculation
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
@@ -14,16 +20,21 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS workouts (
     workout_id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
-    workout_type VARCHAR(50) NOT NULL, -- e.g., run, swim, yoga, etc.
+    workout_type VARCHAR(50) NOT NULL, -- or `workout_type_id INT REFERENCES workout_types(type_id)`
     duration INT CHECK (duration >= 0), -- in minutes
-    distance DECIMAL(5, 2) CHECK (distance >= 0), -- in kilometers, can be NULL for workouts without distance moved
-    calories_burned INT CHECK (calories_burned >= 0), -- optional field for tracking calories burned for each workout
-    sets INT CHECK (sets >= 0), -- optional field for sets in a workout
-    reps INT CHECK (reps >= 0), -- optional field for reps in a workout
-    weight_used INT CHECK (weight_used >= 0), -- optional field for weight used in a workout
+    distance DECIMAL(5, 2) CHECK (distance >= 0), -- in kilometers
+    distance_unit VARCHAR(10) DEFAULT 'km', -- e.g., km or miles
+    calories INT CHECK (calories >= 0), -- updated column name
+    sets INT DEFAULT NULL, -- optional
+    reps INT DEFAULT NULL, -- optional
+    weight_used INT DEFAULT NULL, -- optional
     workout_date DATE DEFAULT CURRENT_DATE,
+    workout_time TIME, -- optional addition
     details JSONB, -- JSON column for workout-specific details
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    notes TEXT, -- optional text column for notes
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP, -- optional for audit
+    deleted_at TIMESTAMP -- optional for audit
 );
 
 -- BMI history table to track BMI changes over time
