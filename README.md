@@ -6,7 +6,7 @@ Workout Tracker App for CS35L UCLA.
 Download and install Node.js from [Node.js Download Page](https://nodejs.org/en/download/prebuilt-installer/current)
 
 Install the required packages:
-```sh
+```
 npm install
 npm install express --save
 npm install jsonwebtoken
@@ -40,12 +40,12 @@ Download Postman from [Postman Download Page](https://www.postman.com/downloads/
 ### 4.1 User Registration
 
 1. **Run the server**:
-   ```sh
+   ```
    node app.js
    ```
    
 2. **Check that the server is running** through the web browser:
-   ```sh
+   ```
    ipconfig
    ```
    - Find your IPv4 address, e.g., `192.168.0.1`
@@ -70,4 +70,24 @@ Download Postman from [Postman Download Page](https://www.postman.com/downloads/
      201 Created: "User registered successfully."
      ```
 
-     
+## 5. Set up the React Frontend
+
+Clone the repository for the React frontend app.
+Install React Dependencies:
+ ```
+npm install react-router-dom
+npm install lucide-react
+npm install react-chartjs-2 chart.js
+npm install react-image-gallery
+   ```
+Open the .env file (or create one) in the root directory and add:
+ ```
+REACT_APP_API_URL=http://localhost:3000
+   ```
+
+Run the React App: npm start
+The app should be available at http://localhost:3001 by default.
+Verify Connection with Backend:
+- Ensure the backend server is running:
+
+Check functionality in the browser (e.g., registering a user, logging workouts).
