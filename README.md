@@ -25,7 +25,7 @@ If using homebrew, do the following:
 brew install postgresql@15
 brew install libpq
 brew link --force libpq
-
+```
 
 Create the user (e.g., 35LbsAdmin): Run the following command in the psql shell terminal.
 ```
