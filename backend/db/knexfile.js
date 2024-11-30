@@ -13,10 +13,10 @@ const commonConfig = {
   client: 'pg',
   connection,
   migrations: {
-    directory: './migrations',
+    directory: './db/migrations',
   },
   seeds: {
-    directory: './seeds',
+    directory: './db/seeds',
   }
 };
 
