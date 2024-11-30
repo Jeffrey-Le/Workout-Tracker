@@ -166,6 +166,19 @@ class WorkoutController {
             return res.status(500).json({ error: err.message });
         }
     }
+    static async getAllWorkouts(req, res) {
+        try {
+            const workouts = await WorkoutModel.findAll(); // Assuming findAll() is implemented in the WorkoutModel
+            if (workouts && workouts.length > 0) {
+                res.status(200).json(workouts);
+            } else {
+                res.status(404).json({ message: 'No workouts found.' });
+            }
+        } catch (err) {
+            console.error('Error fetching workouts:', err.message);
+            res.status(500).json({ error: err.message });
+        }
+    }
 }
 
 module.exports = WorkoutController;

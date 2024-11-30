@@ -1,6 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-//const cors = require('cors');
+const cors = require('cors');
+
+// Initialize app
+const app = express();
+
+// Middleware
+app.use(cors({ origin: 'http://localhost:3000' })); // Allow requests from frontend
+app.use(express.json());
+app.use(bodyParser.json());
 
 // REQUIRE ROUTES
 const UserRoutes = require("./routes/userRoutes");
@@ -9,22 +17,12 @@ const ReminderRoutes = require("./routes/reminderRoutes");
 const PlanRoutes = require('./routes/planRoutes');
 const BmiHistoryRoutes = require('./routes/bmiHistoryRoutes');
 
-// TEST: console.log(dotenv);
-
-const app = express();
-app.use(express.json());
-
-// Middleware
-//app.use(cors());
-app.use(bodyParser.json());
-
 // Default route (can be used to check if the server is running)
 app.get('/', (req, res) => {
     const status = {
         "Status": "Running"
     };
-
-    response.send(status);
+    res.send(status); // Corrected from response.send to res.send
 });
 
 // Error handling middleware (optional, but good for handling errors globally)
@@ -33,10 +31,12 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Something went wrong!' });  // Send a generic error response
 });
 
+// Routes
 app.use("/api/users", UserRoutes);
 app.use("/api/workouts", WorkoutRoutes);
 app.use("/api/reminders", ReminderRoutes);
 app.use("/api/plans", PlanRoutes);
 app.use("/api/bmi", BmiHistoryRoutes);
+
 
 module.exports = app;
