@@ -19,6 +19,14 @@ Install PostgreSQL: Download and install PostgreSQL from PostgreSQL Download Pag
 ```
 https://www.postgresql.org/download/
 ```
+
+If using homebrew, do the following:
+```
+brew install postgresql@15
+brew install libpq
+brew link --force libpq
+
+
 Create the user (e.g., 35LbsAdmin): Run the following command in the psql shell terminal.
 ```
 CREATE USER "35LbsAdmin" WITH PASSWORD '35LbsA+';
