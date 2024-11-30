@@ -31,13 +31,14 @@ const LogWorkout = () => {
 
         try {
             // API request to log workout
-            const response = await fetch('/workouts', {
+            const response = await fetch('http://localhost:5000/api/workouts/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`, // Use stored token for authentication
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify({
+                    
                     workoutType: workoutData.type,
                     duration: workoutData.duration,
                     distance: workoutData.distance,
@@ -45,6 +46,7 @@ const LogWorkout = () => {
                     notes: workoutData.notes,
                 }),
             });
+            
 
             if (!response.ok) {
                 throw new Error('Failed to log workout');

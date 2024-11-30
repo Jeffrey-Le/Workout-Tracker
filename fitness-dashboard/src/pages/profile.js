@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import './profile.css';
-import ActivityTracker from './chart.js';
+import ActivityTracker from './chart';
 import ImageGallery from 'react-image-gallery';
 
 const Profile = () => {

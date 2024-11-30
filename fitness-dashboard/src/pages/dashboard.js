@@ -1,40 +1,64 @@
-import React from 'react';
-import { Activity, Bike, LogOut, User, Calendar, Clock, BarChart2 } from 'lucide-react';
-
+import React, { useEffect, useState } from 'react';
+import { Activity, Bike, LogOut, User } from 'lucide-react';
 
 const Dashboard = () => {
-  const activities = [
-    {
-      date: "Thursday, Nov 11, 2024",
-      type: "Run",
-      metrics: [
-        { label: "Miles", value: "6.00 mi" },
-        { label: "Avg Pace", value: "7:22 /mi" }
-      ],
-      icon: Activity
-    },
-    {
-      date: "Tuesday, Nov 9, 2024",
-      type: "Yoga",
-      metrics: [
-        { label: "Time", value: "25m 36s" },
-        { label: "Calories", value: "236 Cal" }
-      ],
-      icon: User
-    },
-    {
-      date: "Monday, Nov 8, 2024",
-      type: "Cycling",
-      metrics: [
-        { label: "Time", value: "30:00" },
-        { label: "Avg Speed", value: "18.8 mi/h" },
-        { label: "Distance", value: "10.00 mi" },
-        { label: "Calories", value: "309 Cal" }
-      ],
-      icon: Bike
-    }
+  const [activities, setActivities] = useState([]);
 
-  ];
+  // Fetch workouts from the backend
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/workouts', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`, // Include token for authentication
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch workouts');
+        }
+
+        const data = await response.json();
+
+        // Transform the data from the backend to match the structure required by the component
+        const formattedActivities = data.map((workout) => ({
+          date: new Date(workout.workout_date).toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          }),
+          type: workout.workout_type,
+          metrics: [
+            ...(workout.distance ? [{ label: 'Distance', value: `${workout.distance} mi` }] : []),
+            ...(workout.duration ? [{ label: 'Time', value: `${workout.duration} min` }] : []),
+            ...(workout.calories_burned ? [{ label: 'Calories', value: `${workout.calories_burned} Cal` }] : []),
+          ],
+          icon: getIconByType(workout.workout_type), // Map workout type to an icon
+        }));
+
+        setActivities(formattedActivities);
+      } catch (error) {
+        console.error('Error fetching workouts:', error);
+      }
+    };
+
+    fetchWorkouts();
+  }, []);
+
+  // Function to map workout types to icons
+  const getIconByType = (type) => {
+    switch (type.toLowerCase()) {
+      case 'run':
+        return Activity;
+      case 'cycling':
+        return Bike;
+      case 'yoga':
+        return User;
+      default:
+        return User; // Default icon
+    }
+  };
 
   return (
     <>
@@ -45,26 +69,30 @@ const Dashboard = () => {
 
       {/* Activity Cards Grid */}
       <div className="activity-cards">
-        {activities.map((activity, index) => (
-          <div key={index} className="activity-card">
-            <div className="activity-header">
-              <div>
-                <p className="activity-date">{activity.date}</p>
-                <h3 className="activity-type">{activity.type}</h3>
-              </div>
-              <activity.icon className="icon" />
-            </div>
-            
-            <div className="activity-metrics">
-              {activity.metrics.map((metric, idx) => (
-                <div key={idx} className="metric">
-                  <p className="metric-label">{metric.label}</p>
-                  <p className="metric-value">{metric.value}</p>
+        {activities.length > 0 ? (
+          activities.map((activity, index) => (
+            <div key={index} className="activity-card">
+              <div className="activity-header">
+                <div>
+                  <p className="activity-date">{activity.date}</p>
+                  <h3 className="activity-type">{activity.type}</h3>
                 </div>
-              ))}
+                <activity.icon className="icon" />
+              </div>
+
+              <div className="activity-metrics">
+                {activity.metrics.map((metric, idx) => (
+                  <div key={idx} className="metric">
+                    <p className="metric-label">{metric.label}</p>
+                    <p className="metric-value">{metric.value}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>No activities found. Log your first workout!</p>
+        )}
       </div>
     </>
   );
