@@ -28,6 +28,15 @@ class UserModel extends Model {
 
   }
 
+  /** 
+  * @param {string} username - Username for user
+  * @returns {Promise<Object | undefined>} - Returns a single object of a user
+  */
+  static async findByName(username) {
+    return await this.table.where('username', username).select('*').first();
+
+  }
+
   /**
   * @param {integer} userID - Unique User ID
   * @param {string} newPassword - New hashed password for user

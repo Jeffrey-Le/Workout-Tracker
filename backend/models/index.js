@@ -61,7 +61,7 @@ class Model {
             return await this.table.where(this.primaryKey, id).select("*").first();
         }
         catch (error) {
-            throw new Error(`Could not find data with id ${id}`)
+            throw new Error(`Could not find data with id ${id}`);
         }
     }
     

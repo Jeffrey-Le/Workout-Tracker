@@ -1,4 +1,5 @@
 const Model = require('./index');
+const db = require('../config/db');
 
 class BmiHistoryModel extends Model {
     static tableName = 'bmi_history';
@@ -8,7 +9,7 @@ class BmiHistoryModel extends Model {
      * @param {Object} historyData - Contains BMI History credentials related to table
      * @returns {Promise<BmiHistory[]>} - Returns an object list of workouts and data relating to them
      */
-     static async createBmiHistory(historyData) {
+     static async createBmi(historyData) {
         try {
             return await this.table.insert(historyData).returning('*');
         }
@@ -44,6 +45,26 @@ class BmiHistoryModel extends Model {
      */
     static async deleteHistory(historyID) {
         return this.deleteByID(historyID);
+    }
+
+    /**
+     * @param {integer} targetYear - Contains the year we want to retrieve data for
+     * @returns {Promise<String>} - Returns a an object pertaining the averages for monhts of a year
+     */
+    static async getAverages(targetYear) {
+        try {
+            return await db('bmi_history')
+                .select(
+                    db.raw("EXTRACT(MONTH FROM recorded_at)::int AS month"),
+                    db.raw("AVG(bmi) AS average_bmi")
+                )
+                .whereRaw('EXTRACT(YEAR FROM recorded_at) = ?', [targetYear])
+                .groupByRaw("EXTRACT(MONTH FROM recorded_at)")
+                .orderByRaw("EXTRACT(MONTH FROM recorded_at)");
+        }
+        catch (err) {
+            throw new Error("Error retrieving BMI history entries.");
+        }
     }
 }
 

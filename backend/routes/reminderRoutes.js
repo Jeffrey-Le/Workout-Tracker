@@ -1,6 +1,9 @@
 const router = require("express").Router();
+const authenticeToken = require("../middleware/authMiddleware");
 
 const ReminderController = require("../controllers/reminderController");
+
+router.use(authenticeToken);
 
 router.get("/:id", ReminderController.getReminder);
 router.get("/user/:id", ReminderController.getReminderByUser);
