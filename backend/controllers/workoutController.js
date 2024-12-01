@@ -1,5 +1,7 @@
 const WorkoutModel = require("../models/workout");
 
+const db = require('../config/db');
+
 class WorkoutController {
     /** 
      * Adds and Creates a new Workout field in the database.
@@ -9,7 +11,7 @@ class WorkoutController {
      */
     static async addWorkout(req, res) {
         try {
-            const {workoutType, duration, distance, caloriesBurned, sets, reps, weightUsed, workoutDate, details} = req.body;
+            const {workoutType, duration, distance, calories, sets, reps, weightUsed, workoutDate, details} = req.body;
 
             const workoutData = {};
 
@@ -17,7 +19,7 @@ class WorkoutController {
             if (workoutType) workoutData.workout_type = workoutType;
             if (duration) workoutData.duration = duration;
             if (distance) workoutData.distance = distance;
-            if (caloriesBurned) workoutData.calories_burned = caloriesBurned;
+            if (calories) workoutData.calories = calories;
             if (sets) workoutData.sets = sets;
             if (reps) workoutData.reps = reps;
             if (weightUsed) workoutData.weight_used = weightUsed;
@@ -45,7 +47,7 @@ class WorkoutController {
     static async getWorkout(req, res) {
         try {
 
-            const { id } = req.params;
+            const { id } = req.query;
 
             const workout = WorkoutModel.findOneById(id);
 
@@ -91,7 +93,7 @@ class WorkoutController {
      */
     static async getWorkoutByUser(req, res) {
         try {
-            const { id } = req.params;
+            const { id } = req.query;
 
             const workout = WorkoutModel.findByUser(id);
 
@@ -153,7 +155,7 @@ class WorkoutController {
      */
     static async deleteWorkoutByID(req, res) {
         try {
-            const { id } = req.params;
+            const { id } = req.query;
 
             const deletedWorkout = WorkoutModel.deleteWorkout(id);
 
@@ -164,6 +166,64 @@ class WorkoutController {
         }
         catch (err) {
             return res.status(500).json({ error: err.message });
+        }
+    }
+
+    /** 
+     * Gets all workouts for user
+     * @param {Promise<Object>} req - The request header; Will contain information involving workout credentials => In this case, the query means the ID is in the HTTP request.
+     * @param {Promise<Object>} res - The response header; Will allow information to be sent to client 
+     * @returns {Promise<Object>} - Returns the workout object if it can be retrieved
+     */
+    static async getAllWorkouts(req, res) {
+        try {
+            const workouts = await WorkoutModel.findAll(); // Assuming findAll() is implemented in the WorkoutModel
+            if (workouts && workouts.length > 0) {
+                res.status(200).json(workouts);
+            } else {
+                res.status(404).json({ message: 'No workouts found.' });
+            }
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
+
+    /** 
+     * Gets a list of workouts for the whole year and sorted by months and days
+     * @param {Promise<Object>} req - The request header; Will contain information involving workout credentials => In this case, the query means the user_id and year are in the HTTP request.
+     * @param {Promise<Object>} res - The response header; Will allow information to be sent to client 
+     * @returns {Promise<Object>} - Returns the a list of workout objects if they can be retrieved
+     */
+    static async getWorkoutsByYear(req, res) {
+        const { user_id, year } = req.query;
+
+        if (!user_id || !year) {
+            return res.status(400).json({ error: "Missing required parameters: user_id or year" });
+        }
+    
+        try {
+            // Fetch workouts for the given user and year
+            const workouts = await WorkoutModel.findByYear(user_id, year);
+    
+            // Organize data by month and day
+            const activityData = {};
+            for (let month = 1; month <= 12; month++) {
+                const daysInMonth = new Date(year, month, 0).getDate();
+                activityData[month] = Array.from({ length: daysInMonth }, () => []);
+            }
+    
+            workouts.forEach(({ month, day, ...log }) => {
+                activityData[month][day - 1].push(log);
+            });
+    
+            // Respond with formatted activity data
+            res.status(200).json({
+                user_id: parseInt(user_id),
+                year: parseInt(year),
+                activity_data: activityData
+            });
+        } catch (error) {
+            res.status(500).send('Internal Server Error');
         }
     }
 }

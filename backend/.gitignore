@@ -1,0 +1,16 @@
+# Environment Variables
+.env
+
+# Node Modules
+node_modules/
+
+# Lock Files
+package-lock.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# MacOS and Linux junk files
+.DS_Store
+*.swp

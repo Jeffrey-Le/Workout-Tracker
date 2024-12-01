@@ -1,6 +1,9 @@
 const router = require("express").Router();
+const authenticeToken = require("../middleware/authMiddleware");
 
 const PlanController = require("../controllers/planController");
+
+router.use(authenticeToken);
 
 router.get("/:id", PlanController.getPlan);
 router.get("/user/:id", PlanController.getPlanByUser);

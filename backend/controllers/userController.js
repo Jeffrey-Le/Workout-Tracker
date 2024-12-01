@@ -1,6 +1,8 @@
 const { hash } = require("bcrypt");
 const UserModel = require("../models/user");
 const authService = require("../services/authService");
+const jwt = require("jsonwebtoken");
+const jwtSecret = "supersecretkey";
 
 /** 
 * Controller class to implement Buisness logic for User => Any logic a user can do goes here
@@ -21,8 +23,6 @@ class UserController {
       if (!userData.email || !userData.password || !userData.username) {
       return res.status(400).json({ error: 'All fields are required.' });
       }
-
-      // Any Additional Validation if any
 
       // Check if email is taken
       const existingUser = await UserModel.findByEmail(userData.email);
@@ -55,16 +55,18 @@ class UserController {
     const userData = req.body;
 
     try {
-      const user = await UserModel.findByEmail(userData.email);
+      const user = await UserModel.findByName(userData.username);
 
       // User doesn't exist
       if (!user)
         return res.status(401).json({ error: "User doesn't exist" });
 
       // Verify Password
-      if (authService.verifyPassword(password, user.password_hash)) {
+      if (authService.verifyPassword(userData.password, user.password_hash)) {
         // Return JWT Token here and user credentials if need be
-        return res.status(200).json({message: "Login Successful", user });
+        const token = jwt.sign({ user_id: user.user_id, username: user.username }, jwtSecret, { expiresIn: "1h" });
+        return res.status(200).json({ token });
+        //return res.status(200).json({message: "Login Successful", user });
       }
       else
         return res.status(400).json({message: "Invalid credentials"});
