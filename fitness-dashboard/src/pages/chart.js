@@ -23,17 +23,17 @@ ChartJS.register(
   Filler
 );
 
-const ActivityTracker = () => {
-  const [selectedDate, setSelectedDate] = useState(22);
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const dates = Array.from({ length: 7 }, (_, i) => i + 18);
+const ActivityTracker = ({selectedDate, changeYear, title='Activity Tracking', labels={xLabel: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], activityLabel: 'Distance Covered'}, xKey=['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] , clickIndexLabel=Array.from({ length: 7 }, (_, i) => i + 18), data=[8, 6, 9, 10, 7, 5, 8]}) => {
+  //const [selectedDate, setSelectedDate] = useState(clickIndex);
+  const days = xKey;
+  const dates = clickIndexLabel;
 
   const chartData = {
-    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    labels: labels.xLabel,
     datasets: [
       {
-        label: 'Distance Covered',
-        data: [8, 6, 9, 10, 7, 5, 8],
+        label: labels.activityLabel,
+        data: data,
         borderColor: '#50a0e0',
         backgroundColor: 'rgba(80, 160, 224, 0.2)',
         borderWidth: 2,
@@ -85,7 +85,7 @@ const ActivityTracker = () => {
   return (
     <div className="bg-[#222F59] p-5 rounded-2xl shadow-lg w-full" >
       <div className="text-white mb-4">
-        <h1 className="text-xl font-bold">Activity Tracking</h1>
+        <h1 className="text-xl font-bold">{title}</h1>
         <p className="text-sm text-gray-400">Thursday, 22 Sep</p>
       </div>
 
@@ -104,7 +104,7 @@ const ActivityTracker = () => {
                 ? 'bg-[#5050a0] text-white rounded-full'
                 : 'text-gray-300'
             }`}
-            onClick={() => setSelectedDate(date)}
+            onClick={() => changeYear(date)}
           >
             {date}
           </div>

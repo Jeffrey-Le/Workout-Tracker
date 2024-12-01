@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import './profile.css';
 import ActivityTracker from './chart.js';
 import ImageGallery from 'react-image-gallery';
@@ -76,6 +76,153 @@ const Profile = () => {
     }
   };
 
+  // Login Test (FOR TESTING PURPOSES ONLY)
+  const [token, setToken] = useState(0);
+
+  useEffect(() => {
+    const login = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/users/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            "username": "testUser",
+            "password": "testing123"
+          })
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.statusText}`);
+        }
+  
+        const data = await response.json();
+        if (data) {
+          setToken(data.token);
+        }
+      } catch (error) {
+        console.error('Error fetching User Login data:', error);
+      }
+    };
+  
+    login();
+  }, []);
+
+  // Fetch Activity Data
+  const [activityData, setActivityData] = useState(() => {
+    const cachedData = localStorage.getItem('activityData');
+    return cachedData ? JSON.parse(cachedData) : null;
+  });
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()+1);
+
+  const changeMonth = (newMonth) => {
+    const monthNumber = monthNames.findIndex(month => month.toLowerCase().startsWith(newMonth.toLowerCase()));
+    setSelectedMonth(monthNumber+1);
+  };
+
+  useEffect(() => {
+    const cachedData = localStorage.getItem('activityData');
+    setActivityData(cachedData ? JSON.parse(cachedData)['activity_data'][selectedMonth] : []);
+  }, [selectedMonth]);
+
+  const formatActivityData = () => {
+    if (activityData.map) {
+      const distanceSums = activityData.map(subArray =>
+        subArray.reduce((sum, item) => parseFloat(sum) + parseFloat((item.distance || 0)), 0)
+      );
+
+      return distanceSums;
+    }
+  }
+
+ 
+
+  // Fetch BMI Data
+  const [bmiData, setBmiData] = useState(() => {
+    const cachedData = localStorage.getItem('bmiData');
+    return cachedData ? JSON.parse(cachedData) : null;
+  });
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
+
+  // Array of month names
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const changeYear = (newYear) => {
+    setSelectedYear(newYear);
+  };
+  
+  useEffect(() => {
+    const cachedData = localStorage.getItem('bmiData');
+    setBmiData(cachedData ? JSON.parse(cachedData) : null);
+  }, [selectedYear]);
+
+  useEffect(() => {
+    const fetchLogData = async () => {
+      try {
+        const curYear = new Date().getFullYear().toString();
+        const response = await fetch(`http://localhost:3001/api/workouts/activity?user_id=27&year=${curYear}`, {
+          method: 'GET', // HTTP method
+          headers: {
+            'Authorization': `Bearer ${token}`, // Attach token in Authorization header
+            'Content-Type': 'application/json', // Optional, depending on your API
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.statusText}`);
+        }
+
+        const data = await response.json() || [];
+        if (data) {
+          setActivityData(data['activity_data'][selectedMonth] || []);
+          localStorage.setItem('activityData', JSON.stringify(data)); // Cache to localStorage
+        }
+      } catch (error) {
+        console.error('Error fetching Logging data:', error);
+      }
+    }
+
+
+    const fetchBmiData = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/bmi/graph', {
+          method: 'GET', // HTTP method
+          headers: {
+            'Authorization': `Bearer ${token}`, // Attach token in Authorization header
+            'Content-Type': 'application/json', // Optional, depending on your API
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        if (data) {
+          setBmiData(data);
+          localStorage.setItem('bmiData', JSON.stringify(data)); // Cache to localStorage
+        }
+      } catch (error) {
+        console.error('Error fetching BMI data:', error);
+      }
+    };
+
+    fetchLogData();
+    fetchBmiData();
+  }, [token]); // Empty dependency array ensures it runs only once, like `DOMContentLoaded`.
+
+  if (!activityData) {
+    return <div>Loading Activity Logging data...</div>;
+  }
+
+  if (!bmiData) {
+    return <div>Loading BMI data...</div>;
+  }
+
   return (
     <>
       {/* Profile picture row */}
@@ -121,11 +268,11 @@ const Profile = () => {
       <div className="profile-activity-cards">
         {/* Activity Plot */}
         <div className="activity-plot">
-          <ActivityTracker className="activity-tracker" />
+          <ActivityTracker className="activity-tracker" title={'Activity Tracking: Distance'} selectedDate={monthNames[selectedMonth-1].slice(0, 3)} changeYear={changeMonth} labels={{xLabel: activityData.map !== undefined ? activityData.map((_, index) => index) : [], activityLabel: "Distance Covered" }} xKey={[]} clickIndexLabel={monthNames.map(item => item.slice(0, 3))} data={formatActivityData()}/>
         </div>
         {/* BMI Plot */}
         <div className="bmi-plot">
-          <ActivityTracker className="activity-tracker" />
+          <ActivityTracker className="activity-tracker" selectedDate={selectedYear} changeYear={changeYear} title={'BMI'} labels={{xLabel: monthNames.map(item => item.slice(0, 3)), activityLabel: 'Average BMI'}} xKey={[]} clickIndexLabel={Object.keys(bmiData)} data={bmiData[selectedYear]} />
         </div>
       </div>
 
