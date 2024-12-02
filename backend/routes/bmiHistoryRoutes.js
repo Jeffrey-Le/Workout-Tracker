@@ -12,6 +12,5 @@ router.get("/graph", bmiHistoryController.getBmiGraph);
 router.get("/:id", bmiHistoryController.getBmiEntry);
 router.get("/user/:id", bmiHistoryController.getBmiEntriesByUser);
 router.get("/date", bmiHistoryController.getBmiEntriesByDate);
-router.get('/', bmiHistoryController.getAllBmiEntries);
 
 module.exports = router;

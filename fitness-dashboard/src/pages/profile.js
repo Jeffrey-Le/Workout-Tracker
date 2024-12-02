@@ -76,55 +76,49 @@ const Profile = () => {
     }
   };
 
-  // Login Test (FOR TESTING PURPOSES ONLY)
-  const [token, setToken] = useState(0);
+  const [token, setToken] = useState(null);
+  
+  // Fetch Data
+  const [loading, setLoading] = useState(true);
+  const [activityData, setActivityData] = useState(null);  // Fetch Activity Data
+  const [bmiData, setBmiData] = useState(null);  // Fetch BMI Data
 
-  useEffect(() => {
-    const login = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/users/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            "username": "testUser",
-            "password": "testing123"
-          })
-        });
-  
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.statusText}`);
-        }
-  
-        const data = await response.json();
-        if (data) {
-          setToken(data.token);
-        }
-      } catch (error) {
-        console.error('Error fetching User Login data:', error);
-      }
-    };
-  
-    login();
-  }, []);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedBmiYear, setSelectedBmiYear] = useState(new Date().getFullYear().toString());
 
-  // Fetch Activity Data
-  const [activityData, setActivityData] = useState(() => {
-    const cachedData = localStorage.getItem('activityData');
-    return cachedData ? JSON.parse(cachedData) : null;
-  });
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()+1);
+  const [totalActivity, setTotalActivity] = useState({});
+
+  // Array of month names 
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"
+  ];
 
   const changeMonth = (newMonth) => {
     const monthNumber = monthNames.findIndex(month => month.toLowerCase().startsWith(newMonth.toLowerCase()));
     setSelectedMonth(monthNumber+1);
   };
 
-  useEffect(() => {
-    const cachedData = localStorage.getItem('activityData');
-    setActivityData(cachedData ? JSON.parse(cachedData)['activity_data'][selectedMonth] : []);
-  }, [selectedMonth]);
+  const changeYear = (newYear) => {
+    setSelectedBmiYear(newYear);
+  };
+
+  // Calculate the summed activity data for the user
+  const totalActivityData = (data) => {
+    const total = {"count": 0, "duration": 0, "distance": 0};
+
+    if (data?.forEach) {
+    data.forEach((day) => {
+      day.forEach((log) => {
+        total.count++;
+        total.duration += log.duration;
+        total.distance += parseFloat(log.distance);
+      });
+    });
+  }
+
+  setTotalActivity(total);
+  }
 
   const formatActivityData = () => {
     if (activityData.map) {
@@ -136,92 +130,84 @@ const Profile = () => {
     }
   }
 
- 
-
-  // Fetch BMI Data
-  const [bmiData, setBmiData] = useState(() => {
-    const cachedData = localStorage.getItem('bmiData');
-    return cachedData ? JSON.parse(cachedData) : null;
-  });
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
-
-  // Array of month names
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June", 
-    "July", "August", "September", "October", "November", "December"
-  ];
-
-  const changeYear = (newYear) => {
-    setSelectedYear(newYear);
-  };
-  
   useEffect(() => {
-    const cachedData = localStorage.getItem('bmiData');
-    setBmiData(cachedData ? JSON.parse(cachedData) : null);
-  }, [selectedYear]);
-
-  useEffect(() => {
-    const fetchLogData = async () => {
+    const preLoadData = async () => {
       try {
-        const curYear = new Date().getFullYear().toString();
-        const response = await fetch(`http://localhost:3001/api/workouts/activity?user_id=27&year=${curYear}`, {
-          method: 'GET', // HTTP method
-          headers: {
-            'Authorization': `Bearer ${token}`, // Attach token in Authorization header
-            'Content-Type': 'application/json', // Optional, depending on your API
-          },
+        // Check if data is cached in localStorage
+        const cachedActivityData = localStorage.getItem("activityData");
+        const cachedBmiData = localStorage.getItem("bmiData");
+
+        if (cachedActivityData)
+          setActivityData(JSON.parse(cachedActivityData)['activity_data'][selectedMonth]);
+
+        if (cachedBmiData)
+          setBmiData(JSON.parse(cachedBmiData));
+
+        // Login for TESTING
+        const response = await fetch('http://localhost:3001/api/users/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: 'testUser',
+            password: 'testing123',
+          }),
         });
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.statusText}`);
-        }
-
-        const data = await response.json() || [];
-        if (data) {
-          setActivityData(data['activity_data'][selectedMonth] || []);
-          localStorage.setItem('activityData', JSON.stringify(data)); // Cache to localStorage
-        }
-      } catch (error) {
-        console.error('Error fetching Logging data:', error);
-      }
-    }
-
-
-    const fetchBmiData = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/bmi/graph', {
-          method: 'GET', // HTTP method
-          headers: {
-            'Authorization': `Bearer ${token}`, // Attach token in Authorization header
-            'Content-Type': 'application/json', // Optional, depending on your API
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.statusText}`);
-        }
-
+        if (!response.ok) throw new Error(`Login failed: ${response.statusText}`);
+        
         const data = await response.json();
-        if (data) {
-          setBmiData(data);
-          localStorage.setItem('bmiData', JSON.stringify(data)); // Cache to localStorage
+        setToken(data.token); // Set token from login
+        
+        // If not found in localStorage, fetch from API
+        if (!cachedActivityData) {
+          // Fetch activity data if not cached
+          const curYear = new Date().getFullYear().toString();
+
+          const activityResponse = await fetch(`http://localhost:3001/api/workouts/activity?user_id=27&year=${curYear}`, {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${data.token}`, 'Content-Type': 'application/json' },
+          });
+
+          if (!activityResponse.ok) throw new Error(`Failed to fetch activity data: ${activityResponse.statusText}`);
+
+          const activityData = await activityResponse.json();
+
+          setActivityData(activityData['activity_data'][selectedMonth]);
+          localStorage.setItem("activityData", JSON.stringify(activityData));
+        }
+
+        if (!cachedBmiData) {
+          // Fetch BMI data if not cached
+          const bmiResponse = await fetch('http://localhost:3001/api/bmi/graph', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${data.token}`, 'Content-Type': 'application/json' },
+          });
+
+          if (!bmiResponse.ok) throw new Error(`Failed to fetch BMI data: ${bmiResponse.statusText}`);
+
+          const bmiData = await bmiResponse.json();
+
+          setBmiData(bmiData);
+          localStorage.setItem("bmiData", JSON.stringify(bmiData));
         }
       } catch (error) {
-        console.error('Error fetching BMI data:', error);
+        console.error('Error preloading data:', error);
+      } finally {
+        setLoading(false); // Set loading to false if data is fetched and loaded
       }
     };
 
-    fetchLogData();
-    fetchBmiData();
-  }, [token]); // Empty dependency array ensures it runs only once, like `DOMContentLoaded`.
+    preLoadData();
+  }, [selectedMonth, selectedBmiYear]);
 
-  if (!activityData) {
-    return <div>Loading Activity Logging data...</div>;
+  useEffect(() => {
+    totalActivityData(activityData);
+  }, [activityData]);
+
+  if (loading) {
+    return <div>Loading...</div>; // You can replace this with a spinner or a skeleton loader
   }
 
-  if (!bmiData) {
-    return <div>Loading BMI data...</div>;
-  }
 
   return (
     <>
@@ -251,15 +237,15 @@ const Profile = () => {
         <div className="col-2 activity-time-distance">
           <div className="activity">
             <h1>Activities</h1>
-            <p>12</p>
+            <p>{totalActivity.count}</p>
           </div>
           <div className="time">
             <h1>Time</h1>
-            <p>12h 30m</p>
+            <p>{Math.floor(totalActivity.duration / 60)}h {totalActivity.duration % 60}m</p>
           </div>
           <div className="distance">
             <h1>Distance</h1>
-            <p>50 km</p>
+            <p>{totalActivity.distance} km</p>
           </div>
         </div>
       </div>
@@ -268,11 +254,11 @@ const Profile = () => {
       <div className="profile-activity-cards">
         {/* Activity Plot */}
         <div className="activity-plot">
-          <ActivityTracker className="activity-tracker" title={'Activity Tracking: Distance'} selectedDate={monthNames[selectedMonth-1].slice(0, 3)} changeYear={changeMonth} labels={{xLabel: activityData.map !== undefined ? activityData.map((_, index) => index) : [], activityLabel: "Distance Covered" }} xKey={[]} clickIndexLabel={monthNames.map(item => item.slice(0, 3))} data={formatActivityData()}/>
+          <ActivityTracker className="activity-tracker" title={'Activity Tracking: Distance'} selectedDate={monthNames[selectedMonth-1].slice(0, 3)} changeTemporal={changeMonth} labels={{xLabel: activityData.map !== undefined ? activityData.map((_, index) => index) : [], activityLabel: "Distance Covered" }} xKey={[]} clickIndexLabel={monthNames.map(item => item.slice(0, 3))} data={formatActivityData()}/>
         </div>
         {/* BMI Plot */}
         <div className="bmi-plot">
-          <ActivityTracker className="activity-tracker" selectedDate={selectedYear} changeYear={changeYear} title={'BMI'} labels={{xLabel: monthNames.map(item => item.slice(0, 3)), activityLabel: 'Average BMI'}} xKey={[]} clickIndexLabel={Object.keys(bmiData)} data={bmiData[selectedYear]} />
+          <ActivityTracker className="activity-tracker" selectedDate={selectedBmiYear} changeTemporal={changeYear} title={'BMI'} labels={{xLabel: monthNames.map(item => item.slice(0, 3)), activityLabel: 'Average BMI'}} xKey={[]} clickIndexLabel={Object.keys(bmiData)} data={bmiData[selectedBmiYear]} />
         </div>
       </div>
 
