@@ -15,7 +15,6 @@ function authenticateToken(req, res, next) {
     if (!tokenWithoutBearer) return res.sendStatus(403);
   
     jwt.verify(tokenWithoutBearer, jwtSecret, (err, user) => {
-    console.log("Decoded user:", user); // Log the decoded user data
       if (err) return res.sendStatus(403);
       
       req.user = user;
