@@ -1,8 +1,7 @@
 import React from 'react';
 import { useEffect} from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { Activity, Bike, LogOut, User, Calendar, Clock, BarChart2, Search as SearchIcon } from 'lucide-react';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
+import { Activity, LogOut, User, BarChart2, Search as SearchIcon } from 'lucide-react';
 
 import Dashboard from './pages/dashboard'; 
 import LogWorkout from './pages/log_workout';
@@ -12,6 +11,15 @@ import './styles.css';
 import Profile from './pages/profile';
 
 import AuthService from './services/auth';
+import Login from './pages/login';
+
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) {
+      return <Navigate to="/login" replace />;
+  }
+  return children;
+};
 
 
 
@@ -20,8 +28,9 @@ const Sidebar = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-      AuthService.logout();
-      navigate('/'); // Navigate to home page after logout
+      // AuthService.logout();
+      localStorage.removeItem('authToken');
+      navigate('/login');
     };
 
     useEffect(() => {
@@ -30,7 +39,7 @@ const Sidebar = () => {
         AuthService.login('dummyuser');
       }
     }, []);
-    
+
     return (
       <div className="sidebar">
         <div className="logo">
@@ -61,7 +70,7 @@ const Sidebar = () => {
           </Link>
         </nav>
   
-        <button className="logout-btn">
+        <button className="logout-btn" onClick={handleLogout}>
           <LogOut className="icon" />
           <span>Log Out</span>
         </button>
@@ -72,18 +81,27 @@ const Sidebar = () => {
   const App = () => {
     return (
       <Router>
-        <div className="flex min-h-screen bg-slate-900 text-white">
-          <Sidebar />
-          <div className="main-content">
             <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/log-workout" element={<LogWorkout />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/search" element={<SearchPage />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/" element={
+                    <ProtectedRoute>
+                        {/* existing dashboard component */}
+                        <div className="flex min-h-screen bg-slate-900 text-white">
+                            <Sidebar />
+                            <div className="main-content">
+                                <Routes>
+                                    <Route path="/" element={<Dashboard />} />
+                                    <Route path="/log-workout" element={<LogWorkout />} />
+                                    <Route path="/profile" element={<Profile />} />
+                                    <Route path="/search" element={<SearchPage />} />
+                                </Routes>
+                            </div>
+                        </div>
+                    </ProtectedRoute>
+                  }
+                />
             </Routes>
-          </div>
-        </div>
-      </Router>
+        </Router>
     );
   };
   

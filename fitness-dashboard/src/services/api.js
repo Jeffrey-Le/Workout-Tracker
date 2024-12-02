@@ -1,12 +1,13 @@
 // src/services/api.js
 import AuthService from './auth';
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'http://localhost:5001';
 
 class ApiService {
   static async searchWorkouts(date, type) {
     try {
-        const token = AuthService.getToken();
+        //const token = AuthService.getToken();
+        const token = localStorage.getItem('authToken');
         if (!token) {
             throw new Error('No authentication token');
         }
