@@ -1,21 +1,41 @@
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect, useState } from 'react';
 import { Activity, Bike, LogOut, User, Trash2 } from 'lucide-react';
-import axios from 'axios';	
+import axios from 'axios';
 const apiUrl = 'http://localhost:5001/api'; // Updated apiUrl
 
 const Dashboard = () => {
   const [activities, setActivities] = useState([]);
+  const [userName, setUserName] = useState('User');
 
-  // Fetch workouts from the backend
+  const currentDate = new Date();
+  const currentMonthYear = currentDate.toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric',
+  });
+
+  // Fetch user data and workouts from the backend
   useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${apiUrl}/users/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const userData = response.data;
+        setUserName(userData.username || 'User');
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
     const fetchWorkouts = async () => {
       try {
         // Retrieve the token from localStorage
         const token = localStorage.getItem('token');
         const response = await axios.get(`${apiUrl}/workouts`, {
-          headers: { Authorization: `Bearer ${token}` }, // Added 'Bearer ' prefix
+          headers: { Authorization: `Bearer ${token}` },
         });
-    
+
         const data = response.data;
 
         // Transform the data from the backend to match the structure required by the component
@@ -29,9 +49,15 @@ const Dashboard = () => {
           }),
           type: workout.workout_type,
           metrics: [
-            ...(workout.distance ? [{ label: 'Distance', value: `${workout.distance} mi` }] : []),
-            ...(workout.duration ? [{ label: 'Time', value: `${workout.duration} min` }] : []),
-            ...(workout.calories_burned ? [{ label: 'Calories', value: `${workout.calories_burned} Cal` }] : []),
+            ...(workout.distance
+              ? [{ label: 'Distance', value: `${workout.distance} mi` }]
+              : []),
+            ...(workout.duration
+              ? [{ label: 'Time', value: `${workout.duration} min` }]
+              : []),
+            ...(workout.calories_burned
+              ? [{ label: 'Calories', value: `${workout.calories_burned} Cal` }]
+              : []),
           ],
           icon: getIconByType(workout.workout_type), // Map workout type to an icon
         }));
@@ -42,11 +68,13 @@ const Dashboard = () => {
       }
     };
 
+    fetchUserData();
     fetchWorkouts();
   }, []);
 
   // Function to map workout types to icons
   const getIconByType = (type) => {
+    if (!type) return User; // Default icon if type is undefined
     switch (type.toLowerCase()) {
       case 'run':
         return Activity;
@@ -63,21 +91,21 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${apiUrl}/workouts/delete/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }, // Added 'Bearer ' prefix
+      await axios.delete(`${apiUrl}/workouts/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
       // Update the state to remove the deleted workout
-      setActivities(activities.filter(activity => activity.id !== id));
+      setActivities(activities.filter((activity) => activity.id !== id));
     } catch (error) {
       console.error('Error deleting workout:', error);
     }
   };
-  
+
   return (
     <>
       <div className="header">
-        <h1 className="welcome-text">Welcome Back, Felipe J. F.</h1>
-        <h2 className="activities-text">Activities in November, 2024</h2>
+        <h1 className="welcome-text">Welcome Back, {userName}.</h1>
+        <h2 className="activities-text">Activities in {currentMonthYear}</h2>
       </div>
 
       {/* Activity Cards Grid */}
@@ -94,9 +122,9 @@ const Dashboard = () => {
                   </div>
                   <div className="icons">
                     <IconComponent className="icon" />
-                    <Trash2 
-                      className="delete-icon" 
-                      onClick={() => handleDelete(activity.id)} 
+                    <Trash2
+                      className="delete-icon"
+                      onClick={() => handleDelete(activity.id)}
                     />
                   </div>
                 </div>

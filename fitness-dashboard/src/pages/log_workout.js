@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './log_workout.css';
@@ -11,12 +11,31 @@ const LogWorkout = () => {
     workoutType: '',
     duration: '',
     distance: '',
-    calories: '0',
-    details: '', // Renamed from 'notes' to 'details'
-    workoutDate: new Date().toISOString().split('T')[0], // Set to today's date
+    calories: '',
+    details: '',
+    workoutDate: new Date().toISOString().split('T')[0],
   });
 
   const [loading, setLoading] = useState(false);
+  const [workoutTypes, setWorkoutTypes] = useState([]);
+
+  useEffect(() => {
+    const fetchWorkoutTypes = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${apiUrl}/workouts/types`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setWorkoutTypes(response.data);
+      } catch (error) {
+        console.error('Error fetching workout types:', error);
+        // If fetching types fails, you can set default types
+        setWorkoutTypes(['Run', 'Cycling', 'Swimming', 'Yoga']);
+      }
+    };
+
+    fetchWorkoutTypes();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,12 +62,16 @@ const LogWorkout = () => {
 
       // Prepare data to send
       const dataToSend = {
-        ...workoutData,
-        workoutDate: workoutData.workoutDate || new Date().toISOString().split('T')[0],
+        workout_type: workoutData.workoutType,
+        duration: workoutData.duration ? parseFloat(workoutData.duration) : null,
+        distance: workoutData.distance ? parseFloat(workoutData.distance) : null,
+        calories_burned: workoutData.calories ? parseFloat(workoutData.calories) : null,
+        details: workoutData.details || null,
+        workout_date: workoutData.workoutDate || new Date().toISOString().split('T')[0],
       };
 
       // API request to log workout
-      await axios.post(`${apiUrl}/workouts/add`, dataToSend, {
+      await axios.post(`${apiUrl}/workouts`, dataToSend, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -80,13 +103,14 @@ const LogWorkout = () => {
                 value={workoutData.workoutType}
                 onChange={handleChange}
                 className="select"
-                disabled={loading} // Disable form while loading
+                disabled={loading || workoutTypes.length === 0} // Disable if loading types
               >
                 <option value="">Select Type</option>
-                <option value="Run">Run</option>
-                <option value="Cycling">Cycling</option>
-                <option value="Swimming">Swimming</option>
-                <option value="Yoga">Yoga</option>
+                {workoutTypes.map((type, index) => (
+                  <option key={index} value={type.name || type}>
+                    {type.name || type}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -98,7 +122,7 @@ const LogWorkout = () => {
                 value={workoutData.duration}
                 onChange={handleChange}
                 className="input"
-                disabled={loading} // Disable form while loading
+                disabled={loading}
               />
             </div>
 
@@ -110,12 +134,39 @@ const LogWorkout = () => {
                 value={workoutData.distance}
                 onChange={handleChange}
                 className="input"
-                disabled={loading} // Disable form while loading
+                disabled={loading}
               />
             </div>
           </div>
 
           {/* Second row */}
+          <div className="form-row">
+            <div className="form-column">
+              <label className="label">Calories Burned</label>
+              <input
+                type="number"
+                name="calories"
+                value={workoutData.calories}
+                onChange={handleChange}
+                className="input"
+                disabled={loading}
+              />
+            </div>
+
+            <div className="form-column">
+              <label className="label">Date</label>
+              <input
+                type="date"
+                name="workoutDate"
+                value={workoutData.workoutDate}
+                onChange={handleChange}
+                className="input"
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          {/* Description */}
           <div className="form-row-description">
             <label className="label">Description:</label>
             <textarea
@@ -124,7 +175,7 @@ const LogWorkout = () => {
               onChange={handleChange}
               className="input"
               rows="4"
-              disabled={loading} // Disable form while loading
+              disabled={loading}
             />
           </div>
 
@@ -133,7 +184,7 @@ const LogWorkout = () => {
               <button
                 type="button"
                 className="cancel-button"
-                onClick={() => navigate('/')}
+                onClick={() => navigate(-1)}
                 disabled={loading}
               >
                 Cancel
