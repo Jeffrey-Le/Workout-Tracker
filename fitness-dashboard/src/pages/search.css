@@ -45,4 +45,18 @@
     padding: 8px;
     text-align: left; 
   }
-  
+
+
+  .search-button {
+    padding: 8px 16px;
+    margin-left: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #4CAF50;  /* or any color that matches your theme */
+    color: white;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #45a049;
+}
