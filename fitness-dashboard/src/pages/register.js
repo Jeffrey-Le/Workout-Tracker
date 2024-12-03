@@ -23,7 +23,7 @@ function Register() {
     try {
       await axios.post(`${apiUrl}/register`, formData);
       alert('User registered successfully');
-      navigate('/'); // Redirect to workouts
+      navigate('/login'); // Redirect to login
     } catch (error) {
       alert('Registration failed: ' + error.response.data);
     }
