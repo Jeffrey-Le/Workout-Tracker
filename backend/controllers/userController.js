@@ -120,6 +120,32 @@ class UserController {
     }
   }
 
+  /** 
+   * Get the profile of the currently authenticated user.
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Promise<void>}
+   */
+  static async getUserProfile(req, res) {
+    try {
+      const userId = req.user.user_id; // `req.user` is set by `authenticateToken` middleware
+
+      const user = await UserModel.findById(userId);
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      // Exclude sensitive information like password
+      const { password_hash, ...userData } = user;
+
+      res.status(200).json(userData);
+    } catch (err) {
+      console.error('Error fetching user profile:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
 }
 
 module.exports = UserController;

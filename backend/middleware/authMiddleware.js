@@ -1,26 +1,29 @@
-
 const jwt = require("jsonwebtoken");
-const jwtSecret = "supersecretkey";
+const jwtSecret = process.env.JWT_SECRET || "supersecretkey";
 
 // Helper function to authenticate user with JWT
 
 function authenticateToken(req, res, next) {
-    const token = req.headers["authorization"];
+  const authHeader = req.headers["authorization"];
 
-    console.log(token);
-
-    if (!token) return res.sendStatus(401);
-
-    const tokenWithoutBearer = token.split(" ")[1];
-
-    if (!tokenWithoutBearer) return res.sendStatus(403);
-  
-    jwt.verify(tokenWithoutBearer, jwtSecret, (err, user) => {
-      if (err) return res.sendStatus(403);
-  
-      req.user = user;
-      next();
-    });
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "No token provided or malformed header." });
   }
 
-  module.exports = authenticateToken;
+  const token = authHeader.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ error: "Token missing." });
+  }
+
+  jwt.verify(token, jwtSecret, (err, user) => {
+    if (err) {
+      return res.status(401).json({ error: "Invalid or expired token." });
+    }
+
+    req.user = user;
+    next();
+  });
+}
+
+module.exports = authenticateToken;
