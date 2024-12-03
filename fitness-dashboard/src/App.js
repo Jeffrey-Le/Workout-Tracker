@@ -83,7 +83,7 @@ const Sidebar = () => {
       <Router>
             <Routes>
                 <Route path="/login" element={<Login />} />
-                <Route path="/" element={
+                <Route path="*" element={
                     <ProtectedRoute>
                         {/* existing dashboard component */}
                         <div className="flex min-h-screen bg-slate-900 text-white">

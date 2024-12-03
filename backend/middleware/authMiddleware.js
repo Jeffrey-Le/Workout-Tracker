@@ -7,6 +7,8 @@ const jwtSecret = "supersecretkey";
 function authenticateToken(req, res, next) {
     const token = req.headers["authorization"];
 
+    console.log(token);
+
     if (!token) return res.sendStatus(401);
 
     const tokenWithoutBearer = token.split(" ")[1];

@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import './profile.css';
 import ActivityTracker from './chart';
 import ImageGallery from 'react-image-gallery';
+import { Download } from 'lucide-react';
 
 const Profile = () => {
   const [image, setImage] = useState(null);
@@ -105,23 +106,32 @@ const Profile = () => {
 
   // Calculate the summed activity data for the user
   const totalActivityData = (data) => {
+    let cachedActivityData = localStorage.getItem('activityData');
+
+    if (cachedActivityData)
+      cachedActivityData = JSON.parse(cachedActivityData)['activity_data'];
+    
     const total = {"count": 0, "duration": 0, "distance": 0};
 
-    if (data?.forEach) {
-    data.forEach((day) => {
-      day.forEach((log) => {
-        total.count++;
-        total.duration += log.duration;
-        total.distance += parseFloat(log.distance);
-      });
-    });
-  }
+    if (cachedActivityData) {
+      for (let month in cachedActivityData) {
+        const filteredMonth = cachedActivityData[month].filter(array => array.length > 0);
 
-  setTotalActivity(total);
+        filteredMonth.forEach((day) => {
+          day.forEach((log) => {
+            total.count++;
+            total.duration += log.duration;
+            total.distance += parseFloat(log.distance);
+          })
+        })
+      }
+    }
+
+    setTotalActivity(total);
   }
 
   const formatActivityData = () => {
-    if (activityData.map) {
+    if (activityData?.map) {
       const distanceSums = activityData.map(subArray =>
         subArray.reduce((sum, item) => parseFloat(sum) + parseFloat((item.distance || 0)), 0)
       );
@@ -131,8 +141,16 @@ const Profile = () => {
   }
 
   useEffect(() => {
+    const cachedToken = localStorage.getItem('authToken');
+    if (cachedToken)
+      setToken(cachedToken);
+
+  }, []); // Runs only once when the component mounts
+
+  useEffect(() => {
     const preLoadData = async () => {
       try {
+
         // Check if data is cached in localStorage
         const cachedActivityData = localStorage.getItem("activityData");
         const cachedBmiData = localStorage.getItem("bmiData");
@@ -143,29 +161,19 @@ const Profile = () => {
         if (cachedBmiData)
           setBmiData(JSON.parse(cachedBmiData));
 
-        // Login for TESTING
-        const response = await fetch('http://localhost:3001/api/users/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: 'testUser',
-            password: 'testing123',
-          }),
-        });
-
-        if (!response.ok) throw new Error(`Login failed: ${response.statusText}`);
-        
-        const data = await response.json();
-        setToken(data.token); // Set token from login
-        
         // If not found in localStorage, fetch from API
         if (!cachedActivityData) {
+          let user = localStorage.getItem('user');
+
+          if (user)
+            user = JSON.parse(user);
+
           // Fetch activity data if not cached
           const curYear = new Date().getFullYear().toString();
 
-          const activityResponse = await fetch(`http://localhost:3001/api/workouts/activity?user_id=27&year=${curYear}`, {
+          const activityResponse = await fetch(`http://localhost:3001/api/workouts/activity?user_id=${user["user_id"]}&year=${curYear}`, {
             method: 'GET',
-            headers: { 'Authorization': `Bearer ${data.token}`, 'Content-Type': 'application/json' },
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
           });
 
           if (!activityResponse.ok) throw new Error(`Failed to fetch activity data: ${activityResponse.statusText}`);
@@ -180,7 +188,7 @@ const Profile = () => {
           // Fetch BMI data if not cached
           const bmiResponse = await fetch('http://localhost:3001/api/bmi/graph', {
             method: 'GET',
-            headers: { 'Authorization': `Bearer ${data.token}`, 'Content-Type': 'application/json' },
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
           });
 
           if (!bmiResponse.ok) throw new Error(`Failed to fetch BMI data: ${bmiResponse.statusText}`);
@@ -198,7 +206,7 @@ const Profile = () => {
     };
 
     preLoadData();
-  }, [selectedMonth, selectedBmiYear]);
+  }, [token, selectedMonth, selectedBmiYear]);
 
   useEffect(() => {
     totalActivityData(activityData);
@@ -254,11 +262,23 @@ const Profile = () => {
       <div className="profile-activity-cards">
         {/* Activity Plot */}
         <div className="activity-plot">
-          <ActivityTracker className="activity-tracker" title={'Activity Tracking: Distance'} selectedDate={monthNames[selectedMonth-1].slice(0, 3)} changeTemporal={changeMonth} labels={{xLabel: activityData.map !== undefined ? activityData.map((_, index) => index) : [], activityLabel: "Distance Covered" }} xKey={[]} clickIndexLabel={monthNames.map(item => item.slice(0, 3))} data={formatActivityData()}/>
+          <ActivityTracker className="activity-tracker"
+          title={'Activity Tracking: Distance'}
+          selectedDate={monthNames[selectedMonth-1].slice(0, 3)}
+          changeTemporal={changeMonth}
+          labels={{xLabel: activityData ? activityData.map((_, index) => index) : [], activityLabel: "Distance Covered" }}
+          xKey={[]} clickIndexLabel={monthNames.map(item => item.slice(0, 3))}
+          data={formatActivityData()}/>
         </div>
         {/* BMI Plot */}
         <div className="bmi-plot">
-          <ActivityTracker className="activity-tracker" selectedDate={selectedBmiYear} changeTemporal={changeYear} title={'BMI'} labels={{xLabel: monthNames.map(item => item.slice(0, 3)), activityLabel: 'Average BMI'}} xKey={[]} clickIndexLabel={Object.keys(bmiData)} data={bmiData[selectedBmiYear]} />
+          <ActivityTracker className="activity-tracker"
+          title={'BMI'}
+          selectedDate={selectedBmiYear}
+          changeTemporal={changeYear}
+          labels={{xLabel: monthNames.map(item => item.slice(0, 3)), activityLabel: 'Average BMI'}}
+          xKey={[]} clickIndexLabel={bmiData ? Object.keys(bmiData) : []}
+          data={bmiData && selectedBmiYear ? bmiData[selectedBmiYear] : []} />
         </div>
       </div>
 

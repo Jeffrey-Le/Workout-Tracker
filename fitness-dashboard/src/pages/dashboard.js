@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Activity, Bike, LogOut, User } from 'lucide-react';
+import { Activity, Bike, Captions, LogOut, User } from 'lucide-react';
 
 const Dashboard = () => {
   const [activities, setActivities] = useState([]);
@@ -8,10 +8,14 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/workouts', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`, // Include token for authentication
-          },
+        const token = localStorage.getItem('authToken');
+
+        if (!token)
+          return;
+
+        const response = await fetch('http://localhost:3001/api/workouts', {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }, // Include token for authentication
         });
 
         if (!response.ok) {
@@ -19,6 +23,8 @@ const Dashboard = () => {
         }
 
         const data = await response.json();
+
+        console.log(data);
 
         // Transform the data from the backend to match the structure required by the component
         const formattedActivities = data.map((workout) => ({

@@ -8,7 +8,7 @@ class AuthService {
       // In production, this would be a real login endpoint
       const token = btoa(username); // Simple base64 encoding for demo
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify({ username, user_id: 1 }));
+      localStorage.setItem('user', JSON.stringify({ username, user_id: 27 }));
       return true;
     } catch (error) {
       console.error('Login error:', error);

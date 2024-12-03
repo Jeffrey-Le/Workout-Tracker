@@ -10,7 +10,7 @@ router.put("/update", WorkoutController.updateWorkoutByID);
 router.post("/add", WorkoutController.addWorkout);
 router.get("/activity", WorkoutController.getWorkoutsByYear);
 router.get("/user/:id", WorkoutController.getWorkoutByUser);
-router.get("/:id", WorkoutController.getWorkout);
+//router.get("/:id", WorkoutController.getWorkout);
 router.get("/date", WorkoutController.getWorkoutByDate);
 router.get('/', WorkoutController.getAllWorkouts);
 
