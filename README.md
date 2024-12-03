@@ -145,6 +145,7 @@ npm install axios react-router-dom
 npm install lucide-react
 npm install react-chartjs-2 chart.js
 npm install react-image-gallery
+npm install react-datepicker
    ```
 
 Run the React App: npm start
