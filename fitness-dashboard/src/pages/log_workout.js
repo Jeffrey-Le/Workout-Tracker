@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
 import './log_workout.css';
 
-const LogWorkout = () => {
-    const baseUrl = `http://localhost:5000/api`;
+const apiUrl = 'http://localhost:5001';
 
+const LogWorkout = () => {
     const navigate = useNavigate();
     const [workoutData, setWorkoutData] = useState({
-        type: '',
+		workoutType: '',
         duration: '',
         distance: '',
-        calories: '',
+        calories: '0',
         notes: ''
     });
 
@@ -32,45 +32,30 @@ const LogWorkout = () => {
         setLoading(true);
 
         try {
-            // API request to log workout
-            const response = await fetch(`${baseUrl}/workouts/add`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-                },
-                body: JSON.stringify({
-                    
-                    workoutType: workoutData.type,
-                    duration: workoutData.duration,
-                    distance: workoutData.distance,
-                    calories: workoutData.calories,
-                    notes: workoutData.notes,
-                }),
-            });
-            
+			// Retrieve the token from localStorage
+			const token = localStorage.getItem('token');
+			if (!token) {
+				alert('No token found. Please log in again.');
+				setLoading(false);
+				return;
+			}
 
-            if (!response.ok) {
-                throw new Error('Failed to log workout');
-            }
+			// API request to log workout
+			   
+			await axios.post(`${apiUrl}/workouts`, workoutData, {
+				headers: { Authorization: token },
+			});
 
-            const data = await response.json();
-            console.log('Workout logged successfully:', data);
-
-           
-            alert('Workout logged successfully!');
-
-            localStorage.removeItem('activityData');
-
-            // Navigate back to the dashboard
-            navigate('/');
-        } catch (error) {
-            console.error('Error logging workout:', error);
-            alert('Failed to log workout. Please try again.');
-        } finally {
-            setLoading(false); // Re-enable form
-        }
-    };
+			// Notify success
+			alert('Workout logged successfully!');
+			navigate('/'); // Redirect to dashboard
+		} catch (error) {
+			console.error('Error logging workout:', error);
+			alert('Failed to log workout. Please try again.');
+		} finally {
+			setLoading(false); // Re-enable form
+		}
+	};
 
     return (
         <>
@@ -85,8 +70,8 @@ const LogWorkout = () => {
                         <div className="form-column">
                             <label className="label">Workout</label>
                             <select
-                                name="type"
-                                value={workoutData.type}
+                                name="workoutType"
+                                value={workoutData.workoutType}
                                 onChange={handleChange}
                                 className="select"
                                 disabled={loading} // Disable form while loading
@@ -115,7 +100,7 @@ const LogWorkout = () => {
                             <label className="label">Distance (miles)</label>
                             <input
                                 type="number"
-                                step="0.1"
+                                //step="0.1"
                                 name="distance"
                                 value={workoutData.distance}
                                 onChange={handleChange}

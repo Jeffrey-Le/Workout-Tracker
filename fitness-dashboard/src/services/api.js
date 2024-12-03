@@ -1,40 +1,45 @@
-// src/services/api.js
+import axios from 'axios';
 import AuthService from './auth';
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'http://localhost:5001';
 
 class ApiService {
   static async searchWorkouts(date, type) {
     try {
-        //const token = AuthService.getToken();
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-            throw new Error('No authentication token');
-        }
+      // Retrieve the token from localStorage or AuthService
+      const token = AuthService.getToken() || localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
 
-        let url = `${API_URL}/workouts/search?`;
-        if (date) url += `date=${date}&`;
-        if (type) url += `type=${type}`;
+      // Configure headers and query parameters
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          ...(date && { date }),
+          ...(type && { type }),
+        },
+      };
 
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include' // Add this line
-        });
+      // Make the GET request with Axios
+      const response = await axios.get(`${API_URL}/workouts/search`, config);
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch workouts');
-        }
-
-        return await response.json();
+      // Return the response data
+      return response.data;
     } catch (error) {
-        console.error('Error fetching workouts:', error);
-        throw error;
+      console.error('Error fetching workouts:', error);
+
+      // Handle Axios-specific error objects
+      if (error.response) {
+        throw new Error(
+          error.response.data?.message || `Request failed: ${error.response.status}`
+        );
+      }
+      throw error;
     }
-}
+  }
 }
 
 export default ApiService;

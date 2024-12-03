@@ -12,18 +12,15 @@ import Profile from './pages/profile';
 
 import AuthService from './services/auth';
 import Login from './pages/login';
+import Register from './pages/register';
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('authToken');
+  const token = localStorage.getItem('token');
   if (!token) {
       return <Navigate to="/login" replace />;
   }
-  if (AuthService.isAuthenticated())
-    AuthService.login();
   return children;
 };
-
-
 
 // Create a wrapper component for the sidebar to use useNavigate
 const Sidebar = () => {
@@ -32,17 +29,13 @@ const Sidebar = () => {
     const handleLogout = () => {
       // AuthService.logout();
       localStorage.removeItem('authToken');
-      localStorage.removeItem('activityData');
-      localStorage.removeItem('bmiData');
-      localStorage.removeItem('user');
-      localStorage.removeItem('profileIcon');
       navigate('/login');
     };
 
     useEffect(() => {
       // For development only
       if (!AuthService.isAuthenticated()) {
-        AuthService.login();
+        AuthService.login('dummyuser');
       }
     }, []);
 
@@ -89,6 +82,7 @@ const Sidebar = () => {
       <Router>
             <Routes>
                 <Route path="/login" element={<Login />} />
+				<Route path="/register" element={<Register />} />
                 <Route path="*" element={
                     <ProtectedRoute>
                         {/* existing dashboard component */}

@@ -1,32 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Activity, Bike, Captions, LogOut, User } from 'lucide-react';
-
-require('../.env');
+import axios from 'axios';	
+const apiUrl = 'http://localhost:5001'; 
 
 const Dashboard = () => {
   const [activities, setActivities] = useState([]);
-
-  const baseUrl = `http://localhost:5000/api`;
 
   // Fetch workouts from the backend
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
-        const token = localStorage.getItem('authToken');
-
-        if (!token)
-          return;
-
-        const response = await fetch(`${baseUrl}/workouts`, {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }, // Include token for authentication
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch workouts');
-        }
-
-        const data = await response.json();
+		// Retrieve the token from localStorage
+		const token = localStorage.getItem('token');
+		const response = await axios.get(`${apiUrl}/workouts`, {
+			headers: { Authorization: token },
+		});
+    
+		const data = response.data;
 
         // Transform the data from the backend to match the structure required by the component
         const formattedActivities = data.map((workout) => ({
@@ -67,7 +57,7 @@ const Dashboard = () => {
         return User; // Default icon
     }
   };
-
+  
   return (
     <>
       <div className="header">

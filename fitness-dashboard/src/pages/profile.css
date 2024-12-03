@@ -1,14 +1,4 @@
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type=number] {
-    -moz-appearance: textfield;
-  }
-
 .profile-header {
     display: flex;
     justify-content: space-between;
@@ -51,7 +41,7 @@ input[type=number] {
 .col-2 {
     display: flex;
     justify-content: space-between;
-    width: 45rem;
+    width: 20rem;
     margin-bottom: -0.8rem;
     margin-right: 2.5rem;
   }
@@ -63,15 +53,6 @@ input[type=number] {
     align-items: center;
     white-space: nowrap;
   }
-
-.bmiForm {
-    display: flex;
-    width: 2rem;
-    flex-direction: column;
-    align-items: center;
-    white-space: nowrap;
-    gap: 0.8rem;
-}
   
 .activity h1, .time h1, .distance h1 {
     margin: 0 3rem;
