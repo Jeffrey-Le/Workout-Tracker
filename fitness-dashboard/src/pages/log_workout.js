@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import './log_workout.css';
 
 const LogWorkout = () => {
+    const baseUrl = `http://localhost:5000/api`;
+
     const navigate = useNavigate();
     const [workoutData, setWorkoutData] = useState({
         type: '',
@@ -31,11 +33,11 @@ const LogWorkout = () => {
 
         try {
             // API request to log workout
-            const response = await fetch('http://localhost:5000/api/workouts/add', {
+            const response = await fetch(`${baseUrl}/workouts/add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    Authorization: `Bearer ${localStorage.getItem('authToken')}`,
                 },
                 body: JSON.stringify({
                     
@@ -57,6 +59,8 @@ const LogWorkout = () => {
 
            
             alert('Workout logged successfully!');
+
+            localStorage.removeItem('activityData');
 
             // Navigate back to the dashboard
             navigate('/');

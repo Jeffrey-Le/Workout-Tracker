@@ -85,8 +85,9 @@ class UserController {
   * @returns {Promise<Object>} - Returns user object data if user with <id> is found
   */
   static async getUser(req, res) {
-    const { id } = req.query;
     try {
+      const id = req.user.user_id;
+
         const user = await UserModel.findOneById(id);
         if (user)
             res.status(200).json(user);

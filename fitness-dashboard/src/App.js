@@ -18,6 +18,8 @@ const ProtectedRoute = ({ children }) => {
   if (!token) {
       return <Navigate to="/login" replace />;
   }
+  if (AuthService.isAuthenticated())
+    AuthService.login();
   return children;
 };
 
@@ -30,13 +32,17 @@ const Sidebar = () => {
     const handleLogout = () => {
       // AuthService.logout();
       localStorage.removeItem('authToken');
+      localStorage.removeItem('activityData');
+      localStorage.removeItem('bmiData');
+      localStorage.removeItem('user');
+      localStorage.removeItem('profileIcon');
       navigate('/login');
     };
 
     useEffect(() => {
       // For development only
       if (!AuthService.isAuthenticated()) {
-        AuthService.login('dummyuser');
+        AuthService.login();
       }
     }, []);
 

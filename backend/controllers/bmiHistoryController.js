@@ -11,10 +11,7 @@ class BmiHistoryController {
      */
     static async addBMIEntry(req, res) {
         try {
-            const {user_id, weight, height} = req.body;
-
-            if (typeof user_id !== "number" || !user_id)
-                return res.status(400).json({message: "Invalid User ID"});
+            const {weight, height} = req.body;
 
             if (!weight || !height)
                 return res.status(404).json({message: "Insufficient data sent. Data is not found."});
@@ -26,7 +23,7 @@ class BmiHistoryController {
                 return res.status(422).json({message: "Height must be a positive number."});
 
             const bmiData = {
-                "user_id": user_id,
+                "user_id": req.user.user_id,
                 "weight": weight,
                 "height": height
             };
@@ -98,8 +95,6 @@ class BmiHistoryController {
 
             const bmiEntry = await BmiHistoryModel.findByUser(id);
 
-            console.log(bmiEntry);
-
             if (bmiEntry)
                 res.status(200).json(bmiEntry);
             else
@@ -131,12 +126,12 @@ class BmiHistoryController {
             // Process data for each year
             for (const row of availableYears) {
                 // Fetch BMI averages for the current year
-                const averages = await BmiHistoryModel.getAverages(row.year);
+                const averages = await BmiHistoryModel.getAverages(req.user.user_id, row.year);
 
                 // Create an array of size 12, initialized to null for missing months
                 const monthlyAverages = Array(12).fill(null);
                 averages.forEach(({ month, average_bmi }) => {
-                    monthlyAverages[month - 1] = average_bmi; // Correct month index is month - 1
+                    monthlyAverages[month - 1] = average_bmi / 10; // Correct month index is month - 1
                 });
 
                 // Add the data for the current year to the response object

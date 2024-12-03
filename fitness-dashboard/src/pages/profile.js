@@ -2,9 +2,10 @@ import React, { useRef, useState, useEffect } from 'react';
 import './profile.css';
 import ActivityTracker from './chart';
 import ImageGallery from 'react-image-gallery';
-import { Download } from 'lucide-react';
 
 const Profile = () => {
+  const baseUrl = `http://localhost:5000/api`;
+
   const [image, setImage] = useState(null);
 
   const handleImageUpload = (event) => {
@@ -13,6 +14,7 @@ const Profile = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImage(reader.result);
+        localStorage.setItem('profileIcon', reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -78,16 +80,21 @@ const Profile = () => {
   };
 
   const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
   
   // Fetch Data
   const [loading, setLoading] = useState(true);
-  const [activityData, setActivityData] = useState(null);  // Fetch Activity Data
-  const [bmiData, setBmiData] = useState(null);  // Fetch BMI Data
+  const [activityData, setActivityData] = useState(null);  // Activity Data
+  const [bmiData, setBmiData] = useState(null);  // BMI Data
 
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-  const [selectedBmiYear, setSelectedBmiYear] = useState(new Date().getFullYear().toString());
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // Defaults to today's month
+  const [selectedBmiYear, setSelectedBmiYear] = useState(new Date().getFullYear().toString()); // Defaults to today's Year
 
   const [totalActivity, setTotalActivity] = useState({});
+
+  // For Adding BMI Manually
+  const [weight, setWeight] = useState('');
+  const [height, setHeight] = useState('');
 
   // Array of month names 
   const monthNames = [
@@ -105,7 +112,7 @@ const Profile = () => {
   };
 
   // Calculate the summed activity data for the user
-  const totalActivityData = (data) => {
+  const totalActivityData = () => {
     let cachedActivityData = localStorage.getItem('activityData');
 
     if (cachedActivityData)
@@ -115,7 +122,7 @@ const Profile = () => {
 
     if (cachedActivityData) {
       for (let month in cachedActivityData) {
-        const filteredMonth = cachedActivityData[month].filter(array => array.length > 0);
+        const filteredMonth = cachedActivityData[month].filter(day => day.length > 0); // Gets rid of all days in a month that are empty
 
         filteredMonth.forEach((day) => {
           day.forEach((log) => {
@@ -130,6 +137,7 @@ const Profile = () => {
     setTotalActivity(total);
   }
 
+  // Calculates the distance covered each day for every activity log that exists
   const formatActivityData = () => {
     if (activityData?.map) {
       const distanceSums = activityData.map(subArray =>
@@ -140,16 +148,65 @@ const Profile = () => {
     }
   }
 
+  const fetchActivityData = async () => {
+    try {
+      const curYear = new Date().getFullYear().toString();
+
+      const activityResponse = await fetch(`${baseUrl}/workouts/activity?user_id=${user["user_id"]}&year=${curYear}`, {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      });
+
+      if (!activityResponse.ok) throw new Error(`Failed to fetch activity data: ${activityResponse.statusText}`);
+
+      const activityData = await activityResponse.json();
+
+      setActivityData(activityData['activity_data'][selectedMonth]);
+      localStorage.setItem("activityData", JSON.stringify(activityData));
+    } catch (err) {
+      console.log('Error fetching Activity Logs: ', err);
+    }
+  }
+
+  const fetchBmiData = async () => {
+    try {
+      const bmiResponse = await fetch(`${baseUrl}/bmi/graph`, {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      });
+
+      if (!bmiResponse.ok) throw new Error(`Failed to fetch BMI data: ${bmiResponse.statusText}`);
+
+      const bmiData = await bmiResponse.json();
+
+      setBmiData(bmiData);
+      localStorage.setItem("bmiData", JSON.stringify(bmiData));
+    } catch (err) {
+      console.log("Error fetching BMI Data: ", err);
+    }
+  }
+
   useEffect(() => {
     const cachedToken = localStorage.getItem('authToken');
     if (cachedToken)
       setToken(cachedToken);
+
+    const cachedUser = localStorage.getItem('user');
+    if (cachedUser)
+      setUser(JSON.parse(cachedUser));
 
   }, []); // Runs only once when the component mounts
 
   useEffect(() => {
     const preLoadData = async () => {
       try {
+        const cachedImage = localStorage.getItem('profileIcon');
+
+        if (cachedImage) {
+          if (cachedImage.startsWith("data:image/")) {
+            setImage(cachedImage);
+          }
+        }
 
         // Check if data is cached in localStorage
         const cachedActivityData = localStorage.getItem("activityData");
@@ -162,42 +219,12 @@ const Profile = () => {
           setBmiData(JSON.parse(cachedBmiData));
 
         // If not found in localStorage, fetch from API
-        if (!cachedActivityData) {
-          let user = localStorage.getItem('user');
+        if (!cachedActivityData)
+         fetchActivityData(); // Fetch activity data if not cached
 
-          if (user)
-            user = JSON.parse(user);
+        if (!cachedBmiData)
+         fetchBmiData(); // Fetch BMI data if not cached
 
-          // Fetch activity data if not cached
-          const curYear = new Date().getFullYear().toString();
-
-          const activityResponse = await fetch(`http://localhost:3001/api/workouts/activity?user_id=${user["user_id"]}&year=${curYear}`, {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-          });
-
-          if (!activityResponse.ok) throw new Error(`Failed to fetch activity data: ${activityResponse.statusText}`);
-
-          const activityData = await activityResponse.json();
-
-          setActivityData(activityData['activity_data'][selectedMonth]);
-          localStorage.setItem("activityData", JSON.stringify(activityData));
-        }
-
-        if (!cachedBmiData) {
-          // Fetch BMI data if not cached
-          const bmiResponse = await fetch('http://localhost:3001/api/bmi/graph', {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-          });
-
-          if (!bmiResponse.ok) throw new Error(`Failed to fetch BMI data: ${bmiResponse.statusText}`);
-
-          const bmiData = await bmiResponse.json();
-
-          setBmiData(bmiData);
-          localStorage.setItem("bmiData", JSON.stringify(bmiData));
-        }
       } catch (error) {
         console.error('Error preloading data:', error);
       } finally {
@@ -209,13 +236,58 @@ const Profile = () => {
   }, [token, selectedMonth, selectedBmiYear]);
 
   useEffect(() => {
-    totalActivityData(activityData);
+    totalActivityData();
   }, [activityData]);
+
+  const handleBmiSubmit = async (event) => {
+    event.preventDefault(); // Prevent page reload
+    if (!weight || !height) {
+      alert("Please enter both weight and height.");
+      return;
+    }
+
+    // console.log("Weight:", weight);
+    // console.log("Height:", height);
+
+    let finalHeight = height;
+
+    if (user['height'] != null) // If the user provided a height in registration, then we will use that instead
+      finalHeight = user['height'];
+
+    try {
+      // API request to log workout
+      const response = await fetch(`${baseUrl}/bmi/add`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            weight: weight,
+            height: finalHeight
+        }),
+    });
+    
+    if (!response.ok) {
+        throw new Error('Failed to log workout');
+    }
+
+    const data = await response.json();
+    console.log('Workout logged successfully:', data);
+
+    fetchBmiData();
+
+    setWeight('');
+    setHeight('');
+
+    } catch (err) {
+      console.log("Error: ", err);
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>; // You can replace this with a spinner or a skeleton loader
   }
-
 
   return (
     <>
@@ -236,13 +308,44 @@ const Profile = () => {
           </div>
           {/* sub-column: profile text */}
           <div className="profile-text">
-            <h1>Felipe J. F.</h1>
+            <h1>{user.username}</h1>
             <p>Los Angeles, CA</p>
           </div>
         </div>
 
         {/* 2nd column: activity/time/distance 3 sub column Display */}
         <div className="col-2 activity-time-distance">
+
+        <form onSubmit={handleBmiSubmit} className='bmiForm'>
+          <div>
+            <label htmlFor="weight">Weight (kg): </label>
+            <input
+              type="number"
+              id="weight"
+              value={weight}
+              onChange={(e) => setWeight(parseInt(e.target.value))}
+              placeholder="Enter your weight"
+              required
+
+              className='text-center text-sm text-gray-400 bg-[#5050a0] text-white rounded-full'
+            />
+          </div>
+          <div>
+            <label htmlFor="height">Height (cm): </label>
+            <input
+              type="number"
+              id="height"
+              value={height}
+              onChange={(e) => setHeight(parseInt(e.target.value))}
+              placeholder="Enter your height"
+              required
+
+              className='text-center text-sm text-gray-400 bg-[#5050a0] text-white rounded-full'
+            />
+          </div>
+          <button type="submit">Add BMI</button>
+    </form>
+
           <div className="activity">
             <h1>Activities</h1>
             <p>{totalActivity.count}</p>

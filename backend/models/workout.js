@@ -15,7 +15,7 @@ class WorkoutModel extends Model {
     static async createWorkout(workoutData) {
         try {
             // Temporarily set a default `user_id` for testing
-            workoutData.user_id = workoutData.user_id || 27;
+            workoutData.user_id = workoutData.user_id;
     
             console.log('Workout Data:', workoutData); // Log input data
             console.log('Generated SQL:', this.table.insert(workoutData).toString());
@@ -63,9 +63,9 @@ class WorkoutModel extends Model {
     }
 
 
-    static async findAll() {
+    static async findAll(user_id) {
         try {
-            return await this.table.select('*');
+            return await WorkoutModel.findByUser(user_id);
         } catch (err) {
             throw new Error('Error fetching workouts.');
         }

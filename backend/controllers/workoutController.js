@@ -26,6 +26,8 @@ class WorkoutController {
             if (workoutDate) workoutData.workout_date = workoutDate;
             if (details) workoutData.details = details;
 
+            workoutData.user_id = req.user.user_id;
+
             const newWorkout = WorkoutModel.createWorkout(workoutData);
 
             if (newWorkout)
@@ -177,7 +179,8 @@ class WorkoutController {
      */
     static async getAllWorkouts(req, res) {
         try {
-            const workouts = await WorkoutModel.findAll(); // Assuming findAll() is implemented in the WorkoutModel
+            console.log("In get All Workouts: ", req.user.user_id);
+            const workouts = await WorkoutModel.findByUser(req.user.user_id); // Assuming findAll() is implemented in the WorkoutModel
             if (workouts && workouts.length > 0) {
                 res.status(200).json(workouts);
             } else {

@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Activity, Bike, Captions, LogOut, User } from 'lucide-react';
 
+require('../.env');
+
 const Dashboard = () => {
   const [activities, setActivities] = useState([]);
+
+  const baseUrl = `http://localhost:5000/api`;
 
   // Fetch workouts from the backend
   useEffect(() => {
@@ -13,7 +17,7 @@ const Dashboard = () => {
         if (!token)
           return;
 
-        const response = await fetch('http://localhost:3001/api/workouts', {
+        const response = await fetch(`${baseUrl}/workouts`, {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }, // Include token for authentication
         });
@@ -23,8 +27,6 @@ const Dashboard = () => {
         }
 
         const data = await response.json();
-
-        console.log(data);
 
         // Transform the data from the backend to match the structure required by the component
         const formattedActivities = data.map((workout) => ({

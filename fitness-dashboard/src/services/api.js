@@ -1,7 +1,7 @@
 // src/services/api.js
 import AuthService from './auth';
 
-const API_URL = 'http://localhost:5001';
+const API_URL = 'http://localhost:5000';
 
 class ApiService {
   static async searchWorkouts(date, type) {

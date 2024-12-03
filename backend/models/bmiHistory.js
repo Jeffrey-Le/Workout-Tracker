@@ -51,9 +51,9 @@ class BmiHistoryModel extends Model {
      * @param {integer} targetYear - Contains the year we want to retrieve data for
      * @returns {Promise<String>} - Returns a an object pertaining the averages for monhts of a year
      */
-    static async getAverages(targetYear) {
+    static async getAverages(userId, targetYear) {
         try {
-            return await db('bmi_history')
+            return await db('bmi_history').where('user_id', userId)
                 .select(
                     db.raw("EXTRACT(MONTH FROM recorded_at)::int AS month"),
                     db.raw("AVG(bmi) AS average_bmi")
