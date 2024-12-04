@@ -20,21 +20,30 @@ Install PostgreSQL: Download and install PostgreSQL from PostgreSQL Download Pag
 https://www.postgresql.org/download/
 ```
 
-If using homebrew, do the following:
+If using homebrew, do the following on your shell to start PostgreSQL:
 ```
-brew install postgresql@15
-brew install libpq
-brew link --force libpq
+$ cd backend-revision
+$ brew install postgresql@14
+
+//add PostgreSQL to your PATH
+$ export PATH="/opt/homebrew/opt/postgresql@14/bin:$PATH"
+$ export PGDATA="/opt/homebrew/var/postgresql@14"
+$ source ~/.zshrc
+
+$ brew services start postgresql@14
 ```
 
-Create the user (e.g., 35LbsAdmin): Run the following command in the psql shell terminal.
+Create the user (e.g., 35LbsAdmin): 
 ```
-CREATE USER "35LbsAdmin" WITH PASSWORD '35LbsA+';
+// Run the following command in the psql shell terminal.
+postgres=# CREATE USER "35LbsAdmin" WITH PASSWORD '35LbsA+';
+CREATE ROLE
 ```
 Create the database: Run the following command in the psql shell terminal.
 ```
 postgres=# CREATE DATABASE workoutdb OWNER "35LbsAdmin";
 CREATE DATABASE
+
 postgres=# \l                                                                     List of databases
    Name    |   Owner    | Encoding | Locale Provider |          Collate           |           Ctype            | Locale | ICU Rules |   Access privileges
 -----------+------------+----------+-----------------+----------------------------+----------------------------+--------+-----------+-----------------------
@@ -45,12 +54,17 @@ postgres=# \l                                                                   
            |            |          |                 |                            |                            |        |           | postgres=CTc/postgres
  workoutdb | 35LbsAdmin | UTF8     | libc            | English_United States.1252 | English_United States.1252 |        |           |
 (4 rows)
-postgres=#
+
 ```
+
+Exit PostgreSQL Shell
+```
+postgres=# \q 
+```
+
 Run the SQL schema: Execute the provided workoutDB-Setup.sql file to create tables and indexes.
 ```
-psql -U 35LbsAdmin -d workoutdb -f workoutDB-Setup.sql
-C:\35Project\database>psql -U 35LbsAdmin -d workoutdb -f workoutDB-Setup.sql
+$ psql -U 35LbsAdmin -d workoutdb -f workoutDB-Setup.sql
 Password for user 35LbsAdmin:
 psql:workoutDB-Setup.sql:1: NOTICE:  table "reminders" does not exist, skipping
 DROP TABLE
@@ -61,6 +75,7 @@ DROP TABLE
 psql:workoutDB-Setup.sql:4: NOTICE:  table "workouts" does not exist, skipping
 DROP TABLE
 psql:workoutDB-Setup.sql:5: NOTICE:  table "users" does not exist, skipping
+
 DROP TABLE
 CREATE TABLE
 CREATE TABLE
@@ -75,15 +90,19 @@ CREATE INDEX
 CREATE INDEX
 CREATE INDEX
 ```
-Verify tables: After running the schema, connect to the database and list tables.
+Verify tables: After running the schema, connect to the database
 ```
-C:\35Project\database>psql -U 35LbsAdmin -d workoutdb
+$ psql -U 35LbsAdmin -d workoutdb
 Password for user 35LbsAdmin:
 psql (17.1)
 WARNING: Console code page (437) differs from Windows code page (1252)
          8-bit characters might not work correctly. See psql reference
          page "Notes for Windows users" for details.
 Type "help" for help.
+```
+
+List the database after connected to the database
+```
 workoutdb=> \dt
              List of relations
  Schema |    Name     | Type  |   Owner
