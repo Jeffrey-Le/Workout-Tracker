@@ -31,9 +31,9 @@ $ export PATH="/opt/homebrew/opt/postgresql@14/bin:$PATH"
 $ export PGDATA="/opt/homebrew/var/postgresql@14"
 $ source ~/.zshrc
 
-//Create a new local database
+//Create a new local database called "postgres"
 $ brew services start postgresql@14
-$ psql newDatabase
+$ psql postgres
 ```
 
 Create the user (e.g., 35LbsAdmin): 
