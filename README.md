@@ -22,15 +22,18 @@ https://www.postgresql.org/download/
 
 If using homebrew, do the following on your shell to start PostgreSQL:
 ```
+//Install postgreSQL through Homebrew
 $ cd backend-revision
 $ brew install postgresql@14
 
-//add PostgreSQL to your PATH
+//Add PostgreSQL to your PATH
 $ export PATH="/opt/homebrew/opt/postgresql@14/bin:$PATH"
 $ export PGDATA="/opt/homebrew/var/postgresql@14"
 $ source ~/.zshrc
 
+//Create a new local database
 $ brew services start postgresql@14
+$ psql newDatabase
 ```
 
 Create the user (e.g., 35LbsAdmin): 
