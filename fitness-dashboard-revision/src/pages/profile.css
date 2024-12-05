@@ -1,4 +1,14 @@
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+  }
+
 .profile-header {
     display: flex;
     justify-content: space-between;
@@ -41,10 +51,20 @@
 .col-2 {
     display: flex;
     justify-content: space-between;
-    width: 20rem;
+    width: 30rem;
     margin-bottom: -0.8rem;
     margin-right: 2.5rem;
   }
+
+  .bmiForm {
+    display: flex;
+    width: 2rem;
+    flex-direction: column;
+    align-items: center;
+    white-space: nowrap;
+    gap: 0.8rem;
+    margin-right: 15%;
+}
 
 .activity, .time, .distance {
     display: flex;
@@ -52,7 +72,7 @@
     flex-direction: column;
     align-items: center;
     white-space: nowrap;
-  }
+}
   
 .activity h1, .time h1, .distance h1 {
     margin: 0 3rem;
@@ -66,7 +86,7 @@
 
 .profile-activity-cards {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* This creates two equal columns */
+    grid-template-columns: 1fr; /* This creates two equal columns */
     gap: 2rem; /* Adds space between the cards */
     margin: 2rem;
     margin-top: 8rem; /* Adjust this value to move the row further down */

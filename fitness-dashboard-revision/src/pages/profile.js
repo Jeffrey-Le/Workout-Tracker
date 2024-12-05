@@ -1,9 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import './profile.css';
 import ActivityTracker from './chart';
 import ImageGallery from 'react-image-gallery';
+import axios from 'axios';
 
 const Profile = () => {
+  const apiUrl = `http://localhost:5001`;
+
   const [image, setImage] = useState(null);
 
   const handleImageUpload = (event) => {
@@ -12,6 +15,7 @@ const Profile = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImage(reader.result);
+        localStorage.setItem('profileIcon', reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -76,6 +80,165 @@ const Profile = () => {
     }
   };
 
+  // Token and User
+  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
+  
+  // Fetch Data
+  const [loading, setLoading] = useState(true);
+  const [bmiData, setBmiData] = useState(null);  // BMI Data
+
+  const [selectedBmiYear, setSelectedBmiYear] = useState(new Date().getFullYear().toString()); // Defaults to today's Year
+
+  // For Adding BMI Manually
+  const [weight, setWeight] = useState('');
+  const [month, setMonth] = useState('');
+
+  // Total Data for Display
+  const [totalActivity, setTotalActivity] = useState(null);
+
+  // Array of month names 
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const changeYear = (newYear) => {
+    setSelectedBmiYear(newYear);
+  };
+
+  const fetchBmiData = async () => {
+    try {
+      const bmiResponse = await axios.get(`${apiUrl}/bmi/graph`, {
+        headers: { Authorization: token },
+      });
+
+      const bmiData = bmiResponse.data;
+
+      setBmiData(bmiData);
+      localStorage.setItem("bmiData", JSON.stringify(bmiData));
+    } catch (err) {
+      console.log("Error fetching BMI Data: ", err);
+    }
+  }
+
+  const totalActivityData = async () => {
+      try {
+      const res = await axios.get(`${apiUrl}/workouts`, {
+        headers: { Authorization: token },
+      });
+
+      const workouts = res.data;
+
+      console.log(workouts);
+      
+      const total = {"count": 0, "duration": 0, "distance": 0};
+
+      if (workouts) {
+        workouts.forEach((log) => {
+          total.count++;
+          total.duration += log.duration;
+          total.distance += parseFloat(log.distance);
+        });
+      }
+
+      setTotalActivity(total);
+    } catch (err) {
+      console.log("Error fetching BMI Data: ", err);
+    }
+  }
+
+  useEffect(() => {
+    const cachedToken = localStorage.getItem('token');
+    if (cachedToken)
+      setToken(cachedToken);
+
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(`${apiUrl}/profile`, {
+          headers: { Authorization: cachedToken },
+        });
+  
+        const user = res.data;
+  
+        setUser(user);
+        console.log(user);
+      } catch (err) {
+        console.log("Error fetching User Data: ", err);
+      }
+    };
+
+    fetchUser();
+  }, []); // Runs only once when the component mounts
+
+  useEffect(() => {
+    const preLoadData = async () => {
+      try {
+        const cachedImage = localStorage.getItem('profileIcon');
+
+        if (cachedImage) {
+          if (cachedImage.startsWith("data:image/")) {
+            setImage(cachedImage);
+          }
+        }
+
+        // Check if data is cached in localStorage
+        const cachedBmiData = localStorage.getItem("bmiData");
+
+        if (cachedBmiData)
+          setBmiData(JSON.parse(cachedBmiData));
+
+        if (!cachedBmiData)
+         fetchBmiData(); // Fetch BMI data if not cached
+
+        totalActivityData();
+
+      } catch (error) {
+        console.error('Error preloading data:', error);
+      } finally {
+        setLoading(false); // Set loading to false if data is fetched and loaded
+      }
+    };
+
+    preLoadData();
+  }, [token, selectedBmiYear]);
+
+  const handleBmiSubmit = async (event) => {
+    event.preventDefault(); // Prevent page reload
+    if (!weight || !month) {
+      alert("Please enter both weight and month.");
+      return;
+    }
+
+    try {
+      const bmiData = {
+        weight: weight,
+        height: user.height,
+        month: month
+      }
+
+      // API request to log workout
+      await axios.post(`${apiUrl}/bmi`, bmiData, {
+				headers: { Authorization: token },
+			});
+
+		// Notify success
+		alert('BMI logged successfully!');
+
+    fetchBmiData();
+
+    setWeight('');
+    setMonth('');
+
+    } catch (err) {
+      console.log("Error: ", err);
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>; // You can replace this with a spinner or a skeleton loader
+  }
+
   return (
     <>
       {/* Profile picture row */}
@@ -95,37 +258,82 @@ const Profile = () => {
           </div>
           {/* sub-column: profile text */}
           <div className="profile-text">
-            <h1>Felipe J. F.</h1>
+            <h1>{user ? user.username : <div>Loading</div>}</h1>
             <p>Los Angeles, CA</p>
           </div>
         </div>
 
         {/* 2nd column: activity/time/distance 3 sub column Display */}
         <div className="col-2 activity-time-distance">
+
+        <form onSubmit={handleBmiSubmit} className='bmiForm'>
+          <div>
+            <label htmlFor="weight">Weight (kg): </label>
+            <input
+              type="number"
+              id="weight"
+              value={weight}
+              onChange={(e) => setWeight(parseInt(e.target.value))}
+              placeholder="Enter your weight"
+              required
+
+              className='text-center text-sm text-gray-400 bg-[#5050a0] text-white rounded-full'
+            />
+          </div>
+          <div>
+            <label htmlFor="month">Select a Month:</label>
+              <select
+                id="month"
+                value={month}
+                onChange={(e) => setMonth(e.target.value)}
+                required
+              >
+                <option value="" disabled>
+                  Choose a month
+                </option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+          </div>
+          <button type="submit">Add BMI</button>
+    </form>
+
           <div className="activity">
             <h1>Activities</h1>
-            <p>12</p>
+            <p>{totalActivity ? totalActivity.count : 0}</p>
           </div>
           <div className="time">
             <h1>Time</h1>
-            <p>12h 30m</p>
+            <p>{totalActivity ? totalActivity.duration : 0}m</p>
           </div>
           <div className="distance">
             <h1>Distance</h1>
-            <p>50 km</p>
+            <p>{totalActivity ? totalActivity.distance : 0}km</p>
           </div>
         </div>
       </div>
 
       {/* Activity + BMI plots row */}
       <div className="profile-activity-cards">
-        {/* Activity Plot */}
-        <div className="activity-plot">
-          <ActivityTracker className="activity-tracker" />
-        </div>
         {/* BMI Plot */}
         <div className="bmi-plot">
-          <ActivityTracker className="activity-tracker" />
+          <ActivityTracker className="activity-tracker"
+          title={'BMI'}
+          selectedDate={selectedBmiYear}
+          changeTemporal={changeYear}
+          labels={{xLabel: monthNames.map(item => item.slice(0, 3)), activityLabel: 'Average BMI'}}
+          xKey={[]} clickIndexLabel={bmiData ? Object.keys(bmiData) : []}
+          data={bmiData && selectedBmiYear ? bmiData[selectedBmiYear] : []} />
         </div>
       </div>
 

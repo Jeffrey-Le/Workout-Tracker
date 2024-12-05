@@ -29,6 +29,8 @@ const Sidebar = () => {
     const handleLogout = () => {
       // AuthService.logout();
       localStorage.removeItem('token');
+      localStorage.removeItem('bmiData');
+      localStorage.removeItem('profileIcon');
       navigate('/login');
     };
 
