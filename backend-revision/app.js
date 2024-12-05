@@ -4,16 +4,18 @@ const jwt = require("jsonwebtoken");
 const { Pool } = require("pg");
 const bcrypt = require('bcrypt');
 
+require('dotenv').config(); // Load environment variables
+
 const app = express();
 const port = 5001;
 
 // PostgreSQL configuration
 const pool = new Pool({
-	host: "localhost",
-	port: 5432,
-	user: "postgres",
-	password: "Velestia#6921",
-	database: "workoutdb",
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || 5432,
+  user: process.env.DB_USER || '35LbsAdmin',
+  password: process.env.DB_PASSWORD || '35LbsA+',
+  database: process.env.DB_NAME || 'workoutdb'
 });
 
 // Middleware
