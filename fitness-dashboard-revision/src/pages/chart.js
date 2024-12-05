@@ -47,7 +47,10 @@ const ActivityTracker = ({title='Activity Tracking', selectedDate, changeTempora
     maintainAspectRatio: false,
     scales: {
       y: {
-        beginAtZero: true,
+        beginAtZero: false,
+        min: 10,
+        max: 30,
+        stepSize: 4,
         grid: {
           color: 'rgba(224, 224, 224, 0.1)',
         },
