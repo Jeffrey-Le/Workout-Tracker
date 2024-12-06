@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import './register.css'; // Importing the custom CSS file
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import frameImage from './Frame.png'; // Importing the image
 
 const apiUrl = 'http://localhost:5001';
 
@@ -111,6 +113,10 @@ function Register() {
 		</button>
         </div>
       </form>
+      		{/* Image below the login form */}
+				<div className="image-container2">
+					<img src={frameImage} alt="Your Image" className="center-image2" />
+				</div>
     </div>
   );
 }

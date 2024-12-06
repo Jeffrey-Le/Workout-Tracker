@@ -1,0 +1,95 @@
+/* Container Styling */
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 20vh;
+    background-color: #1e1e30;
+    flex-direction: column; /* Changed from row to column to stack form and image */
+  }
+  
+  /* Form Styling */
+  .form-container form {
+    width: calc(2 * 33.33vh); /* Width is three times the height */
+    height: 45vh; /* Fixed height relative to viewport */
+    padding: 2rem;
+    background-color: #292946;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  /* Form Row Styling */
+  .form-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  
+  /* Form Column Styling */
+  .form-column {
+    display: flex;
+    flex-direction: column;
+    width: 45%; /* Adjust width to fit within the row */
+  }
+  
+  /* Label Styling */
+  .label {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  /* Input Styling */
+  .input {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #383850;
+    color: white;
+    font-size: 1rem;
+  }
+  
+  .input:focus {
+    outline: none;
+    border: 1px solid #5e5da5;
+  }
+  
+  /* Button Styling */
+  button {
+    width: 50%; /* Button width is half the container width */
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 1rem;
+    align-self: center;
+  }
+  
+  button:hover {
+    background-color: #4b4a88;
+  }
+  
+  /* Image Container Styling */
+  .image-container2 {
+    display: flex;
+    justify-content: center; /* Centers the image horizontally */
+    align-items: center;
+    width: 100%;
+    margin-top: 2.5rem !important; /* Move the image further down */
+  }
+  
+  /* Image Styling */
+  .center-image2 {
+    max-width: 100%; /* Ensures the image doesn't exceed the container's width */
+    height: auto; /* Maintains aspect ratio */
+    max-height: 200px; /* Optional: Limit the image height */
+  }
+  

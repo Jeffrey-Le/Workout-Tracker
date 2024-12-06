@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
+import './login.css'; // Importing the custom CSS file
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import frameImage from './Frame.png'; // Importing the image
 
 const apiUrl = 'http://localhost:5001';
 
 // Login Component
 function Login({ setToken }) {
-	const [formData, setFormData] = useState({ username: '', password: '' }); 
+	const [formData, setFormData] = useState({ username: '', password: '' });
 	const navigate = useNavigate();
-  
+
 	const handleChange = (e) =>
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -23,54 +25,55 @@ function Login({ setToken }) {
 			alert('Login failed: ' + error.response.data);
 		}
 	};
-	
+
 	const handleRegisterRedirect = () => {
 		navigate('/register'); // Navigate to the register page
 	};
 
-    return (
-        <div className="flex min-h-screen bg-slate-900 text-white items-center justify-center">
-            <div className="w-full max-w-md p-8 bg-slate-800 rounded-lg shadow-lg">
-                <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label htmlFor="login-user-id" className="block mb-2">User ID</label>
-                        <input
-                            name="username"
-                            type="text"
-                            value={formData.username}
-                            onChange={handleChange}
+	return (
+		<div className="login-container">
+			<div className="login-card">
+				<h2 className="login-title">Login</h2>
+				<form onSubmit={handleSubmit}>
+					<div className="form-group">
+						<label htmlFor="login-user-id" className="form-label">User ID</label>
+						<input
+							name="username"
+							type="text"
+							value={formData.username}
+							onChange={handleChange}
 							required
-                            className="w-full p-2 rounded bg-slate-700 text-white"
-                            placeholder="Enter user ID"
-                        />
-                    </div>
-                    <div className="mb-6">
-                        <label htmlFor="login-password" className="block mb-2">Password</label>
-                        <input
-                            name="password"
-                            type="password"
-                            value={formData.password}
-                            onChange={handleChange}
+							className="form-input"
+							placeholder="Enter user ID"
+						/>
+					</div>
+					<div className="form-group">
+						<label htmlFor="login-password" className="form-label">Password</label>
+						<input
+							name="password"
+							type="password"
+							value={formData.password}
+							onChange={handleChange}
 							required
-                            className="w-full p-2 rounded bg-slate-700 text-white"
-                            placeholder="Enter password"
-                        />
-                    </div>
-					<button
-						type="submit"
-						className="w-full bg-blue-600 text-white rounded p-2 mb-4 hover:bg-blue-700"
-					>
+							className="form-input"
+							placeholder="Enter password"
+						/>
+					</div>
+					<button type="submit" className="btn btn-primary">
 						Login
-					</button>	
-					<button 
-						type="button" onClick={handleRegisterRedirect} className="w-full bg-blue-600 text-white rounded p-2 hover:bg-blue-700">
+					</button>
+					<button type="button" onClick={handleRegisterRedirect} className="btn btn-secondary">
 						Register
 					</button>
-                </form>
-            </div>
-        </div>
-    );
-};
+				</form>
+
+				{/* Image below the login form */}
+				<div className="image-container">
+					<img src={frameImage} alt="Your Image" className="center-image" />
+				</div>
+			</div>
+		</div>
+	);
+}
 
 export default Login;
