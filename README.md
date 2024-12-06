@@ -97,7 +97,7 @@ CREATE INDEX
 Verify tables: After running the schema, connect to the database
 ```
 $ psql -U 35LbsAdmin -d workoutdb
-Password for user 35LbsAdmin:
+Password for user 35LbsAdmin: 35LbsA+
 psql (17.1)
 WARNING: Console code page (437) differs from Windows code page (1252)
          8-bit characters might not work correctly. See psql reference
