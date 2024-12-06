@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './log_workout.css';
@@ -8,14 +8,47 @@ const apiUrl = 'http://localhost:5001';
 const LogWorkout = () => {
     const navigate = useNavigate();
     const [workoutData, setWorkoutData] = useState({
-		workoutType: '',
+        workoutType: '',
         duration: '',
         distance: '',
         calories: '0',
-        notes: ''
+        notes: '',
     });
 
+    const [workouts, setWorkouts] = useState([]); // State to store logged workouts
     const [loading, setLoading] = useState(false);
+
+    // Dynamically generate today's date
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('en-US', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
+
+    // Fetch previously logged workouts when the component loads
+    useEffect(() => {
+        const fetchWorkouts = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('No token found. Please log in again.');
+                    return;
+                }
+
+                const response = await axios.get(`${apiUrl}/workouts`, {
+                    headers: { Authorization: token },
+                });
+                setWorkouts(response.data); // Update workouts state with fetched data
+            } catch (error) {
+                console.error('Error fetching workouts:', error);
+                alert('Failed to fetch workouts. Please try again.');
+            }
+        };
+
+        fetchWorkouts();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,43 +60,58 @@ const LogWorkout = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Disable form while loading
         setLoading(true);
 
         try {
-			// Retrieve the token from localStorage
-			const token = localStorage.getItem('token');
-			if (!token) {
-				alert('No token found. Please log in again.');
-				setLoading(false);
-				return;
-			}
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('No token found. Please log in again.');
+                setLoading(false);
+                return;
+            }
 
-			// API request to log workout
-			   
-			await axios.post(`${apiUrl}/workouts`, workoutData, {
-				headers: { Authorization: token },
-			});
+            const response = await axios.post(`${apiUrl}/workouts`, workoutData, {
+                headers: { Authorization: token },
+            });
 
-			// Notify success
-			alert('Workout logged successfully!');
-			navigate('/'); // Redirect to dashboard
-		} catch (error) {
-			console.error('Error logging workout:', error);
-			alert('Failed to log workout. Please try again.');
-		} finally {
-			setLoading(false); // Re-enable form
-		}
-	};
+            // Update local workouts list with newly logged workout
+            setWorkouts((prev) => [...prev, response.data]);
+
+            alert('Workout logged successfully!');
+            navigate('/'); // Redirect to dashboard
+        } catch (error) {
+            console.error('Error logging workout:', error);
+            alert('Failed to log workout. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <>
             <div className="header">
-                <h1 className="today-date-text">Today, 11th November 2024</h1>
+                <h1 className="today-date-text">Today, {formattedDate}</h1>
                 <h2 className="header-text">New Entry</h2>
             </div>
 
+            {/* Display previously logged workouts */}
+            <div className="logged-workouts">
+                <h3>Logged Workouts:</h3>
+                <ul>
+                    {workouts.length > 0 ? (
+                        workouts.map((workout) => (
+                            <li key={workout.workout_id}>
+                                <strong>{workout.workout_type}</strong> - {workout.duration} mins - {workout.distance} miles
+                                {workout.details.notes && ` (Notes: ${workout.details.notes})`}
+                            </li>
+                        ))
+                    ) : (
+                        <p>No workouts logged yet.</p>
+                    )}
+                </ul>
+            </div>
+
+            {/* Form to log a new workout */}
             <div className="form-container">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="form-row">
@@ -74,7 +122,7 @@ const LogWorkout = () => {
                                 value={workoutData.workoutType}
                                 onChange={handleChange}
                                 className="select"
-                                disabled={loading} // Disable form while loading
+                                disabled={loading}
                             >
                                 <option value="">Select Type</option>
                                 <option value="Run">Run</option>
@@ -92,7 +140,7 @@ const LogWorkout = () => {
                                 value={workoutData.duration}
                                 onChange={handleChange}
                                 className="input"
-                                disabled={loading} // Disable form while loading
+                                disabled={loading}
                             />
                         </div>
 
@@ -100,17 +148,15 @@ const LogWorkout = () => {
                             <label className="label">Distance (miles)</label>
                             <input
                                 type="number"
-                                //step="0.1"
                                 name="distance"
                                 value={workoutData.distance}
                                 onChange={handleChange}
                                 className="input"
-                                disabled={loading} // Disable form while loading
+                                disabled={loading}
                             />
                         </div>
                     </div>
 
-                    {/* Second row */}
                     <div className="form-row-description">
                         <label className="label">Description:</label>
                         <textarea
@@ -119,7 +165,7 @@ const LogWorkout = () => {
                             onChange={handleChange}
                             className="input"
                             rows="4"
-                            disabled={loading} // Disable form while loading
+                            disabled={loading}
                         />
                     </div>
 
