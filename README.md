@@ -156,7 +156,7 @@ cd Workout-Tracker
 
 ### Frontend Setup
 
-1. **Navigate to the Frontend Directory:**
+1. **Navigate to the Frontend Directory in a new shell window while keeping the serverer running:**
 
    From the root of the project (`Workout-Tracker` directory):
 
@@ -223,8 +223,10 @@ cd Workout-Tracker
 2. Test API endpoints:
 
    - **Register:**
-
+     - Set the method to POST.
      - Endpoint: `POST http://localhost:5001/register`
+     - Go to the "Body" tab.
+     - Select "raw" and change the format dropdown to JSON.
      - Body (JSON):
 
        ```json
