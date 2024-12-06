@@ -233,6 +233,7 @@ app.get("/bmi/graph", authenticateToken, async (req, res) => {
             FROM bmi_history
             WHERE user_id = $1
             AND EXTRACT(YEAR FROM recorded_at) = $2
+            AND bmi BETWEEN 10 AND 30
             GROUP BY EXTRACT(MONTH FROM recorded_at)
             ORDER BY EXTRACT(MONTH FROM recorded_at);
             `,
@@ -244,8 +245,8 @@ app.get("/bmi/graph", authenticateToken, async (req, res) => {
           // Create an array of size 12, initialized to null for missing months
           const monthlyAverages = Array(12).fill(null);
           averages.forEach(({ month, average_bmi }) => {
-              monthlyAverages[month - 1] = average_bmi /10; // Correct month index is month - 1
-              console.log(`Month: ${month}, Average BMI: ${average_bmi / 10}`);
+              monthlyAverages[month - 1] = average_bmi; // Correct month index is month - 1
+              console.log(`Month: ${month}, Average BMI: ${average_bmi}`);
           });
 
           // Add the data for the current year to the response object
