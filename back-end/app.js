@@ -119,6 +119,24 @@ app.post("/workouts", authenticateToken, async (req, res) => {
   }
 });
 
+// Delete Workout
+app.delete("/workouts/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deleteResult = await pool.query(
+      "DELETE FROM workouts WHERE workout_id = $1 AND user_id = $2 RETURNING *",
+      [id, req.user.user_id]
+    );
+    if (deleteResult.rows.length === 0) {
+      return res.status(404).send("Workout not found.");
+    }
+    res.status(200).send("Workout deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting workout:", error);
+    res.status(500).send("Internal server error.");
+  }
+});
+
 
 // Get user's workouts
 app.get("/workouts", authenticateToken, async (req, res) => {

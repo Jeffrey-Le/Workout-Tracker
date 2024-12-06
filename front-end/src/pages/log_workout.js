@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './log_workout.css';
@@ -18,7 +18,6 @@ const LogWorkout = () => {
     const [workouts, setWorkouts] = useState([]); // State to store logged workouts
     const [loading, setLoading] = useState(false);
 
-    // Dynamically generate today's date
     const today = new Date();
     const formattedDate = today.toLocaleDateString('en-US', {
         weekday: 'long',
@@ -27,7 +26,6 @@ const LogWorkout = () => {
         year: 'numeric',
     });
 
-    // Fetch previously logged workouts when the component loads
     useEffect(() => {
         const fetchWorkouts = async () => {
             try {
@@ -40,7 +38,7 @@ const LogWorkout = () => {
                 const response = await axios.get(`${apiUrl}/workouts`, {
                     headers: { Authorization: token },
                 });
-                setWorkouts(response.data); // Update workouts state with fetched data
+                setWorkouts(response.data);
             } catch (error) {
                 console.error('Error fetching workouts:', error);
                 alert('Failed to fetch workouts. Please try again.');
@@ -62,6 +60,12 @@ const LogWorkout = () => {
         e.preventDefault();
         setLoading(true);
 
+        if (!workoutData.distance) {
+            alert('Distance is required for all workouts.');
+            setLoading(false);
+            return;
+        }
+
         try {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -74,11 +78,10 @@ const LogWorkout = () => {
                 headers: { Authorization: token },
             });
 
-            // Update local workouts list with newly logged workout
             setWorkouts((prev) => [...prev, response.data]);
 
             alert('Workout logged successfully!');
-            navigate('/'); // Redirect to dashboard
+            navigate('/');
         } catch (error) {
             console.error('Error logging workout:', error);
             alert('Failed to log workout. Please try again.');
@@ -94,7 +97,6 @@ const LogWorkout = () => {
                 <h2 className="header-text">New Entry</h2>
             </div>
 
-            {/* Form to log a new workout */}
             <div className="form-container">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="form-row">
@@ -111,7 +113,6 @@ const LogWorkout = () => {
                                 <option value="Run">Run</option>
                                 <option value="Cycling">Cycling</option>
                                 <option value="Swimming">Swimming</option>
-                                <option value="Yoga">Yoga</option>
                             </select>
                         </div>
 
@@ -136,6 +137,7 @@ const LogWorkout = () => {
                                 onChange={handleChange}
                                 className="input"
                                 disabled={loading}
+                                required
                             />
                         </div>
                     </div>

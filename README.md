@@ -6,51 +6,64 @@
 
 ## Overview
 
-The Workout Tracker App is a full-stack web application designed for logging and managing fitness activities. It provides features for tracking workouts, analyzing BMI trends, and managing user profiles, ensuring a seamless and dynamic user experience.
-
----
+The **Workout Tracker App** is a full-stack web application designed for logging and managing fitness activities. It offers features for tracking workouts, analyzing BMI trends, and managing user profiles, ensuring a seamless and dynamic user experience.
 
 ## Features
 
 ### Core Features
 
 1. **Dynamic Data Display**
-   - Displays workout logs, activity statistics, and BMI trends in real-time.
+   - Real-time display of workout logs, activity statistics, and BMI trends.
 
 2. **Data Upload and Persistence**
    - Log workouts with details such as type, duration, distance, and notes.
-   - Delete workouts.
+   - Delete workouts as needed.
 
 3. **Search Functionality**
    - Search workouts by type and date.
-   - Fetch results dynamically from the backend.
+   - Fetch and display results dynamically from the backend.
 
 4. **Secure Authentication**
    - Implements JWT for user authentication.
-   - Hashes passwords using `bcrypt`.
+   - Hashes passwords using `bcrypt` for enhanced security.
 
 5. **User Profile Management**
-   - Edit and manage personal details such as username, email, and height.
+   - Edit and manage personal details including username, email, and height.
+   - Upload and manage profile pictures.
 
 6. **BMI Tracking**
    - Log and visualize BMI trends with monthly breakdowns.
    - Analyze BMI changes over time using interactive charts.
 
----
-
 ## Technology Stack
 
 ### Frontend
 
-- **Frameworks and Libraries:** React.js, Chart.js, Axios, Lucide React, React Router, React Image Gallery
-- **Styling:** Tailwind CSS and custom CSS
+- **Frameworks and Libraries:**
+  - React.js
+  - Chart.js
+  - Axios
+  - Lucide React
+  - React Router
+  - React Image Gallery
+
+- **Styling:**
+  - Tailwind CSS
+  - Custom CSS
 
 ### Backend
 
-- **Framework:** Node.js with Express.js
-- **Database:** PostgreSQL
-- **Authentication:** JSON Web Tokens (JWT)
-- **Security:** Password hashing using `bcrypt`
+- **Framework:**
+  - Node.js with Express.js
+
+- **Database:**
+  - PostgreSQL
+
+- **Authentication:**
+  - JSON Web Tokens (JWT)
+
+- **Security:**
+  - Password hashing using `bcrypt`
 
 ---
 
@@ -58,251 +71,390 @@ The Workout Tracker App is a full-stack web application designed for logging and
 
 ### Prerequisites
 
-1. **Node.js:** Download and install from [Node.js official website](https://nodejs.org/).
-2. **npm:** Comes with Node.js.
-3. **PostgreSQL:** Download and install from [PostgreSQL official website](https://www.postgresql.org/download/).
-   - Ensure that PostgreSQL is properly installed and running on your local machine.
+Before setting up the **Workout Tracker App**, ensure that your system meets the following prerequisites:
 
----
+1. **Install Git:**
+   - **Windows:**
+     - Download and install Git from the [official website](https://git-scm.com/download/win).
+   - **MacOS:**
+     - Install Git via Homebrew:
+       ```bash
+       brew install git
+       ```
+   - **Linux:**
+     - Install Git using your distribution's package manager. For example, on Ubuntu:
+       ```bash
+       sudo apt update
+       sudo apt install git
+       ```
 
-### Clone the Repository
+2. **Install Docker:**
+   - **Windows and MacOS:**
+     - Download and install Docker Desktop from the [Docker official website](https://www.docker.com/products/docker-desktop/).
+     - Follow the installation instructions specific to your operating system.
+     - **Note:** Docker Desktop includes Docker Compose.
 
-```bash
-git clone https://github.com/Jeffrey-Le/Workout-Tracker.git
-cd Workout-Tracker
-```
+   - **Linux:**
+     - Follow the official Docker installation guide for [Linux](https://docs.docker.com/engine/install/).
+     - Additionally, install Docker Compose:
+       ```bash
+       sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+       sudo chmod +x /usr/local/bin/docker-compose
+       ```
+       - Verify installation:
+         ```bash
+         docker-compose --version
+         ```
 
----
+3. **Enable Docker Buildx:**
+   - **Docker Buildx** is a CLI plugin for extended build capabilities with Docker. It's included by default in Docker Desktop (Windows/MacOS) and Docker Engine (Linux) from version 19.03 onwards.
+   
+   - **Verify Buildx Installation:**
+     ```bash
+     docker buildx version
+     ```
+     - You should see version information if Buildx is installed correctly.
 
-### Backend Setup
+4. **Configure Docker to Use Buildx:**
+   - **Why Enable Buildkit/Buildx?**
+     - Buildkit is a modern backend for Docker builds that offers improved performance, better caching, and new features. Enabling it ensures that Docker can efficiently build and manage multi-stage builds, which are often used in complex applications like the Workout Tracker App.
 
-1. **Navigate to the Backend Directory:**
+   - **For Linux Users:**
+     1. **Edit the Docker Daemon Configuration:**
+        - Open the `daemon.json` file using a text editor like `nano`:
+          ```bash
+          sudo nano /etc/docker/daemon.json
+          ```
+        - If the file doesn't exist, this command will create it.
+     2. **Add the Following Configuration to Enable Buildkit:**
+        ```json
+        {
+          "features": {
+            "buildkit": true
+          }
+        }
+        ```
+        - **Explanation:**
+          - The `"buildkit": true` setting enables Docker's Buildkit features.
+     3. **Save and Exit:**
+        - In `nano`, press `CTRL + O` to write out the changes.
+        - Press `CTRL + X` to exit the editor.
+     4. **Restart Docker to Apply Changes:**
+        ```bash
+        sudo systemctl restart docker
+        ```
+     5. **Verify Buildkit is Enabled:**
+        ```bash
+        docker buildx version
+        ```
+        - Ensure that Buildx is active and functioning.
 
+   - **For Windows and MacOS Users:**
+     1. **Open Docker Desktop:**
+        - Click on the Docker icon in your system tray and select **Settings**.
+     2. **Navigate to Docker Engine Settings:**
+        - Go to **Settings** > **Docker Engine**.
+     3. **Add/Modify the Configuration to Enable Buildkit:**
+        ```json
+        {
+          "features": {
+            "buildkit": true
+          }
+        }
+        ```
+        - **Explanation:**
+          - Similar to Linux, this configuration enables Buildkit.
+     4. **Apply and Restart Docker Desktop:**
+        - Click **Apply & Restart** to save changes and restart Docker with the new configuration.
+     5. **Verify Buildkit is Enabled:**
+        - Open a new terminal and run:
+          ```bash
+          docker buildx version
+          ```
+          - Ensure that Buildx is active and functioning.
+
+### Step-by-Step Setup
+
+#### Step 1: Clone the Repository
+
+1. **Open Terminal:**
+   - **Windows:** Use Command Prompt, PowerShell, or Git Bash.
+   - **MacOS/Linux:** Use the default terminal application.
+
+2. **Navigate to Desired Directory:**
    ```bash
-   cd back-end
+   cd /path/to/your/projects/directory
    ```
 
-2. **Install Dependencies:**
-
+3. **Clone the Repository:**
    ```bash
-   npm install
-   npm install express --save
-   npm install jsonwebtoken
-   npm install cors
-   npm install bcryptjs
+   git clone https://github.com/Jeffrey-Le/Workout-Tracker.git
+   cd Workout-Tracker
    ```
 
-3. **Database Setup:**
+#### Step 2: Configure Environment Variables
 
-   - **Locate the SQL Schema File:**
+1. **Create a `.env` File:**
+   - In the root `Workout-Tracker` directory, create a file named `.env`.
+   - You can use `nano` (Linux/MacOS) or any text editor of your choice.
+   ```bash
+   nano .env
+   ```
 
-     The `workoutDB-Setup.sql` file is located in the `back-end` directory of the cloned repository.
-
-   - **Create a PostgreSQL User and Database:**
-
-     Open your terminal and run the following commands:
-
-     ```bash
-     psql postgres
-     ```
-
-     In the PostgreSQL shell, run:
-
-     ```sql
-     CREATE USER "35LbsAdmin" WITH PASSWORD 'password';
-     CREATE DATABASE workoutdb OWNER "35LbsAdmin";
-     ```
-
-     Exit the PostgreSQL shell:
-
-     ```sql
-     \q
-     ```
-
-   - **Run the SQL Schema File:**
-
-     From your terminal, execute:
-
-     ```bash
-     psql -U 35LbsAdmin -d workoutdb -f workoutDB-Setup.sql
-     ```
-
-     If prompted, enter the password you set ('password').
-
-4. **Configure Environment Variables:**
-
-   - **Create a `.env` File:**
-
-     In the `back-end` directory, create a file named `.env` with the following content:
-
-     ```
-     DB_HOST=localhost
+2. **Add Configuration Variables:**
+   - Paste the following content into the `.env` file:
+     ```plaintext
+     # Database Configuration
+     POSTGRES_USER=35LbsAdmin
+     POSTGRES_PASSWORD=35LbsA+
+     POSTGRES_DB=workoutdb
+     DB_HOST=db
      DB_PORT=5432
      DB_NAME=workoutdb
      DB_USER=35LbsAdmin
-     DB_PASSWORD=password
-     JWT_SECRET=YourJWTSecret
+     DB_PASSWORD=35LbsA+
+     
+     # JWT Configuration
+     JWT_SECRET=supersecretkey
      JWT_EXPIRATION=1h
-     PORT=5001
+
+     # Frontend Configuration
+     REACT_APP_API_URL=http://localhost:5001
      ```
+   - **Important Notes:**
+     - **Security:** 
+       - Ensure that `DB_PASSWORD` and `JWT_SECRET` are strong and unique, especially in a production environment.
+       - **Do not** commit the `.env` file to version control. It's recommended to add `.env` to your `.gitignore` file.
+     - **Database Credentials:**
+       - Ensure that `POSTGRES_USER`, `POSTGRES_PASSWORD`, and other database credentials match those expected by your PostgreSQL setup.
 
-     - Replace `YourJWTSecret` with a secret key of your choice. This is used for JWT token signing.
+3. **Save and Exit:**
+   - In `nano`, press `CTRL + O` to save and `CTRL + X` to exit.
 
-5. **Start the Backend Server:**
+#### Step 3: Initialize the Database
 
+1. **Database Setup:**
+   - The PostgreSQL database will be initialized automatically using the `docker-compose.yml` and the `workoutDB-Setup.sql` script located in the `/docker-entrypoint-initdb.d/` directory.
+
+
+#### Step 4: Build and Run the Application
+
+1. **Ensure You Are in the Project Directory:**
+   - You should be in the root `Workout-Tracker` directory where the `docker-compose.yml` file is located.
    ```bash
-   node app.js
+   cd /path/to/Workout-Tracker
    ```
 
-   The server will run on `http://localhost:5001`.
+2. **Start the Docker Services:**
+   ```bash
+   docker-compose up --build
+   ```
+   - **What This Command Does:**
+     - **`--build`:** Forces Docker to rebuild the images, ensuring that any changes are incorporated.
+     - **`up`:** Builds, (re)creates, starts, and attaches to containers for a service.
+
+3. **Understanding the Output:**
+   - **Database (`workout_tracker_db`):**
+     - Initialization messages indicating the creation of tables and readiness to accept connections.
+     - Notices about tables not existing initially are normal on the first run.
+   - **Backend (`workout_tracker_backend`):**
+     - Logs indicating that the server is listening on `http://localhost:5001`.
+     - Ensure there are no critical errors in the backend logs.
+   - **Frontend (`workout_tracker_frontend`):**
+     - Deprecation warnings related to `webpack-dev-server` (these won't prevent the app from running but should be addressed in future updates).
+     - Confirmation that the development server has started and is listening on `http://localhost:3000`.
+
+   - **Successful Startup Indicators:**
+     - **Database:** Logs indicate that the database system is ready to accept connections.
+     - **Backend:** Logs like `Workout Tracker App listening at http://localhost:5001`.
+     - **Frontend:** Logs like `Compiled with warnings` and confirmation of the development server.
+
+4. **Accessing the Application:**
+   - **Frontend:** Open your web browser and navigate to [http://localhost:3000](http://localhost:3000).
+   - **Backend API:** Accessible at [http://localhost:5001](http://localhost:5001) (for API requests).
+
+#### Step 5: Access the Application
+
+1. **Open Your Web Browser:**
+   - Navigate to [http://localhost:3000](http://localhost:3000) to access the Workout Tracker App.
+
+2. **Initial Setup:**
+   - **Register a New User:**
+     - Click on the "Register" button.
+     - Fill in your details (username, email, password, age, gender, height).
+     - Submit the form to create a new account.
+   - **Log In:**
+     - After registration, navigate to the login page.
+     - Enter your credentials to access the dashboard.
 
 ---
 
-### Frontend Setup
+## Additional Commands for Managing Docker
 
-1. **Navigate to the Frontend Directory in a new shell window while keeping the serverer running:**
+### 1. **Stop the Services**
 
-   From the root of the project (`Workout-Tracker` directory):
+- **Gracefully Stop All Services:**
+  ```bash
+  docker-compose down
+  ```
+  - This stops and removes all containers defined in the `docker-compose.yml` file without deleting the data.
 
-   ```bash
-   cd front-end
-   ```
+### 2. **Reset the Database**
 
-2. **Install Dependencies:**
+- **Completely Remove Containers and Volumes:**
+  ```bash
+  docker-compose down -v
+  docker-compose up --build
+  ```
+  - **What This Does:**
+    - The `-v` flag removes the Docker volumes, effectively deleting all database data.
+    - Re-running `docker-compose up --build` will rebuild the containers and re-initialize the database.
 
-   ```bash
-   npm install
-   npx create-react-app workout-track
-   npm install axios react-router-dom
-   npm install lucide-react
-   npm install react-chartjs-2 chart.js
-   npm install react-image-gallery
-   npm install react-datepicker
-   
-   ```
+  - **Warning:**
+    - This will erase **all** data in your PostgreSQL database. Use with caution, especially in a production environment.
 
-3. **Start the React Development Server:**
+### 3. **Check Running Containers**
 
-   ```bash
-   npm start
-   ```
+- **List All Running Containers:**
+  ```bash
+  docker ps
+  ```
 
-   The app will run on `http://localhost:3000`.
+### 4. **View Logs**
+
+- **View Real-Time Logs for All Services:**
+  ```bash
+  docker-compose logs -f
+  ```
+  - **What This Does:**
+    - Streams logs from all containers, allowing you to monitor their activity in real-time.
+
+### 5. **Rebuild Specific Services**
+
+- **Rebuild Frontend Only:**
+  ```bash
+  docker-compose up --build frontend
+  ```
+
+- **Rebuild Backend Only:**
+  ```bash
+  docker-compose up --build backend
+  ```
 
 ---
 
 ## Usage
 
-1. **Register a User:**
+### 1. **Register a User**
 
-   - Open your browser and navigate to `http://localhost:3000/register`.
-   - Create an account by providing details like username, email, and password.
+1. **Navigate to Registration Page:**
+   - Go to [http://localhost:3000/register](http://localhost:3000/register).
 
-2. **Login:**
+2. **Fill in Registration Details:**
+   - Enter your username, email, password, age, gender, and height.
+   - Click "Register" to create your account.
 
-   - After registration, navigate to `http://localhost:3000/login`.
-   - Enter your credentials to log in.
+### 2. **Log In**
 
-3. **Log Workouts:**
+1. **Navigate to Login Page:**
+   - Go to [http://localhost:3000/login](http://localhost:3000/login).
 
-   - Navigate to the "Log Workout" page.
-   - Add workout details, including type, duration, distance, and notes.
-   - View and delete logged workouts on the dashboard.
+2. **Enter Credentials:**
+   - Input your registered username and password.
+   - Click "Login" to access your dashboard.
 
-4. **Search Workouts:**
+### 3. **Log Workouts**
 
-   - Use the search interface to filter workouts by type and date.
+1. **Access Dashboard:**
+   - After logging in, you’ll be redirected to the dashboard.
 
-5. **Track BMI:**
+2. **Add a New Workout:**
+   - Click on "Log Workout" or navigate to [http://localhost:3000/log_workout](http://localhost:3000/log_workout).
+   - Fill in workout details: type, duration, distance, calories, and optional notes.
+   - Click "Create" to log the workout.
 
-   - Navigate to the "Profile" page.
-   - Log your weight to track BMI trends over time.
-   - View BMI charts and analyze changes.
+3. **View Logged Workouts:**
+   - Your workouts will appear below the logging form, displaying the date, type, distance, duration, and calories.
 
-6. **Manage Profile:**
+4. **Delete a Workout:**
+   - Click the delete button (trash icon) at the bottom right of the desired workout card to remove it.
 
-   - Update user details and upload profile pictures on the "Profile" page.
+### 4. **Search Workouts**
 
----
+1. **Navigate to Search Page:**
+   - Go to [http://localhost:3000/search](http://localhost:3000/search).
 
-## Testing the API
+2. **Apply Filters:**
+   - Select a workout type and/or choose a date to filter workouts.
 
-### Using Postman
+3. **View Results:**
+   - Click "Search" to display workouts matching your criteria.
 
-1. Install [Postman](https://www.postman.com/downloads/).
+### 5. **Track BMI**
 
-2. Test API endpoints:
+1. **Access Profile Page:**
+   - Click on your profile picture or navigate to [http://localhost:3000/profile](http://localhost:3000/profile).
 
-   - **Register:**
-     - Set the method to POST.
-     - Endpoint: `POST http://localhost:5001/register`
-     - Go to the "Body" tab.
-     - Select "raw" and change the format dropdown to JSON.
-     - Body (JSON):
+2. **Log BMI:**
+   - Enter your current weight and select the month.
+   - Click "Add BMI" to record your BMI.
 
-       ```json
-       {
-         "username": "testuser",
-         "email": "testuser@example.com",
-         "password": "password123",
-         "age": 25,
-         "height": 170
-       }
-       ```
+3. **View BMI Trends:**
+   - BMI trends are visualized using interactive charts, showing monthly averages.
 
-   - **Login:**
+### 6. **Manage Profile**
 
-     - Endpoint: `POST http://localhost:5001/login`
-     - Body (JSON):
+1. **Edit Profile Details:**
+   - On the profile page, update your username, email, age, gender, and height as needed.
 
-       ```json
-       {
-         "username": "testuser",
-         "password": "password123"
-       }
-       ```
-
-   - **Authenticated Requests:**
-
-     - After logging in, you will receive a JWT token.
-     - Include this token in the `Authorization` header for protected endpoints:
-
-       ```
-       Authorization: Bearer <your_jwt_token>
-       ```
-
-   - **Log a Workout:**
-
-     - Endpoint: `POST http://localhost:5001/workouts`
-     - Headers:
-
-       ```
-       Authorization: Bearer <your_jwt_token>
-       ```
-
-     - Body (JSON):
-
-       ```json
-       {
-         "workoutType": "Running",
-         "duration": 30,
-         "distance": 5.0,
-         "calories": 300,
-         "notes": "Morning run"
-       }
-       ```
+2. **Upload Profile Picture:**
+   - Click on your profile picture to upload a new image.
 
 ---
 
-## Project Requirements Coverage
+## Key Notes
 
-### Core Requirements
+1. **Data Persistence:**
+   - The PostgreSQL database data is stored in a Docker volume (`db_data`) and persists across container restarts.
+   - To fully reset the database, remove the volume using:
+     ```bash
+     docker-compose down -v
+     ```
 
-- **Dynamic Data Display:** Displays workout logs, BMI trends, and profile updates in real-time.
-- **Data Upload and Persistence:** Logs workouts and persists user details to the database.
-- **Search Functionality:** Provides meaningful search through workout logs based on type and date.
-- **Authentication:** Secure login and JWT-based authentication.
-- **Code Execution:** Contains significant client-side (React components, state management) and server-side logic (Express routes, database interactions).
+2. **Environment Variables Security:**
+   - **Important:** Do not share sensitive information in `.env` files publicly.
+   - For production, ensure environment variables are securely managed and not hard-coded.
+
+3. **Default Credentials:**
+   - The app uses the `.env` file to initialize the database and backend.
+   - If sharing the repository, ensure the `.env` file is **excluded** (typically via `.gitignore`) to prevent exposing sensitive information.
+
+4. **Ports Configuration:**
+   - **Frontend:** [http://localhost:3000](http://localhost:3000)
+   - **Backend (API):** [http://localhost:5001](http://localhost:5001)
+   - **PostgreSQL Database:** Accessible internally via Docker on port `5432`.
+
+5. **Docker Compose Structure:**
+   - **Services Defined:**
+     - `db`: PostgreSQL database.
+     - `backend`: Node.js/Express server.
+     - `frontend`: React application.
+
+6. **Troubleshooting Common Issues:**
+   - **Backend 404 Errors:**
+     - Ensure that all necessary backend routes are defined (e.g., `DELETE /workouts/:id`).
+     - Verify that the frontend is making requests to the correct API endpoints.
+   - **Database Connection Issues:**
+     - Ensure the `.env` file has correct database credentials.
+     - Check if the PostgreSQL container is running without errors.
+   - **Buildx Errors:**
+     - Ensure Buildx is properly installed and configured.
+     - Verify that the Docker daemon has experimental features enabled if required.
+     - Recreate the Buildx builder if issues persist:
+       ```bash
+       docker buildx create --use --name mybuilder
+       docker buildx inspect --bootstrap
+       ```
 
 ---
 
@@ -321,60 +473,9 @@ cd Workout-Tracker
 ## Submission and Access Information
 
 - **GitHub Repository URL:**
-
   ```
   https://github.com/Jeffrey-Le/Workout-Tracker
   ```
-
-  The repository is public, so no additional access permissions are required.
-
----
-
-## Notes
-
-- **Environment Variables Security:**
-
-  - Ensure that sensitive information like `DB_PASSWORD` and `JWT_SECRET` are kept secure.
-  - Do not commit your `.env` file to version control if it contains sensitive data.
-
-- **Ports Configuration:**
-
-  - The backend runs on port `5001` and the frontend on port `3000`. If these ports are in use, you can change them in the `.env` file (for the backend) and in the `package.json` or startup script (for the frontend).
-
-- **Frontend-Backend Integration:**
-
-  - The frontend is configured to communicate with the backend at `http://localhost:5001`. If you change the backend port or run it on a different host, update the API URLs in the frontend code (usually in `api.js` or similar configuration files).
-
-- **Database Configuration:**
-
-  - **SQL Schema File Location:**
-
-    The `workoutDB-Setup.sql` file required for setting up the database is located in the `back-end` directory of the cloned repository:
-
-    ```
-    Workout-Tracker/
-      back-end/
-        workoutDB-Setup.sql
-        ...
-    ```
-
-  - Ensure that PostgreSQL is running and that you have created the user and database as specified.
-  - Running the `workoutDB-Setup.sql` file is crucial for creating the necessary tables and schemas in your PostgreSQL database.
-
-- **Additional Tips:**
-
-  - If you encounter any issues with dependencies, ensure that you have the correct versions of Node.js and npm installed.
-  - For Mac users using Homebrew, you can install PostgreSQL with:
-
-    ```bash
-    brew install postgresql
-    ```
-
-  - Start PostgreSQL service:
-
-    ```bash
-    brew services start postgresql
-    ```
+  - The repository is **public**, so no additional access permissions are required.
 
 ---
-
