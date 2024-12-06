@@ -1,186 +1,202 @@
-# Workout-Tracker
-Workout Tracker App for CS35L UCLA.
 
-## 1. Set up the server
 
-Download and install Node.js from [Node.js Download Page](https://nodejs.org/en/download/prebuilt-installer/current)
+---
 
-Install the required packages:
-```
-cd back-end
-npm install
-npm install express --save
-npm install jsonwebtoken
-npm install cors
-npm install bcryptjs
-```
+# Workout Tracker App
 
-## 2. Set up the database
+## Overview
 
-Install PostgreSQL: Download and install PostgreSQL from PostgreSQL Download Page.
-```
-https://www.postgresql.org/download/
-```
+The Workout Tracker App is a full-stack web application designed for logging and managing fitness activities. It provides features for tracking workouts, analyzing BMI trends, and managing user profiles, ensuring a seamless and dynamic user experience.
 
-If using homebrew, do the following on your shell to start PostgreSQL:
-```
-//Install postgreSQL through Homebrew
-$ cd back-end
-$ brew install postgresql@14
+---
 
-//Add PostgreSQL to your PATH
-$ export PATH="/opt/homebrew/opt/postgresql@14/bin:$PATH"
-$ export PGDATA="/opt/homebrew/var/postgresql@14"
-$ source ~/.zshrc
+## Features
 
-//Create a new local database called "postgres"
-$ brew services start postgresql@14
-$ psql postgres
-```
+### Core Features
+1. **Dynamic Data Display**
+   - Displays workout logs, activity statistics, and BMI trends in real-time.
 
-Create the user (e.g., 35LbsAdmin): 
-```
-// Run the following command in the psql shell terminal.
-postgres=# CREATE USER "35LbsAdmin" WITH PASSWORD '35LbsA+';
-CREATE ROLE
-```
-Create the database: Run the following command in the psql shell terminal.
-```
-postgres=# CREATE DATABASE workoutdb OWNER "35LbsAdmin";
-CREATE DATABASE
+2. **Data Upload and Persistence**
+   - Log workouts with details such as type, duration, distance, and notes.
+   - Delete workouts.
 
-postgres=# \l                                                                     List of databases
-   Name    |   Owner    | Encoding | Locale Provider |          Collate           |           Ctype            | Locale | ICU Rules |   Access privileges
------------+------------+----------+-----------------+----------------------------+----------------------------+--------+-----------+-----------------------
- postgres  | postgres   | UTF8     | libc            | English_United States.1252 | English_United States.1252 |        |           |
- template0 | postgres   | UTF8     | libc            | English_United States.1252 | English_United States.1252 |        |           | =c/postgres          +
-           |            |          |                 |                            |                            |        |           | postgres=CTc/postgres
- template1 | postgres   | UTF8     | libc            | English_United States.1252 | English_United States.1252 |        |           | =c/postgres          +
-           |            |          |                 |                            |                            |        |           | postgres=CTc/postgres
- workoutdb | 35LbsAdmin | UTF8     | libc            | English_United States.1252 | English_United States.1252 |        |           |
-(4 rows)
+3. **Search Functionality**
+   - Search workouts by type and date.
+   - Fetch results dynamically from the backend.
 
-```
+4. **Secure Authentication**
+   - Implements JWT for user authentication.
+   - Hashes passwords using `bcrypt`.
 
-Exit PostgreSQL Shell
-```
-postgres=# \q 
-```
+5. **User Profile Management**
+   - Edit and manage personal details such as username, email, and height.
 
-Run the SQL schema: Execute the provided workoutDB-Setup.sql file to create tables and indexes.
-```
-$ psql -U 35LbsAdmin -d workoutdb -f workoutDB-Setup.sql
-Password for user 35LbsAdmin:
-psql:workoutDB-Setup.sql:1: NOTICE:  table "reminders" does not exist, skipping
-DROP TABLE
-psql:workoutDB-Setup.sql:2: NOTICE:  table "plans" does not exist, skipping
-DROP TABLE
-psql:workoutDB-Setup.sql:3: NOTICE:  table "bmi_history" does not exist, skipping
-DROP TABLE
-psql:workoutDB-Setup.sql:4: NOTICE:  table "workouts" does not exist, skipping
-DROP TABLE
-psql:workoutDB-Setup.sql:5: NOTICE:  table "users" does not exist, skipping
+6. **BMI Tracking**
+   - Log and visualize BMI trends with monthly breakdowns.
+   - Analyze BMI changes over time using interactive charts.
 
-DROP TABLE
-CREATE TABLE
-CREATE TABLE
-CREATE TABLE
-CREATE TABLE
-CREATE TABLE
-CREATE INDEX
-CREATE INDEX
-CREATE INDEX
-CREATE INDEX
-CREATE INDEX
-CREATE INDEX
-CREATE INDEX
-```
-Verify tables: After running the schema, connect to the database
-```
-$ psql -U 35LbsAdmin -d workoutdb
-Password for user 35LbsAdmin:
-psql (17.1)
-WARNING: Console code page (437) differs from Windows code page (1252)
-         8-bit characters might not work correctly. See psql reference
-         page "Notes for Windows users" for details.
-Type "help" for help.
-```
+---
 
-List the database after connected to the database
-```
-workoutdb=> \dt
-             List of relations
- Schema |    Name     | Type  |   Owner
---------+-------------+-------+------------
- public | bmi_history | table | 35LbsAdmin
- public | plans       | table | 35LbsAdmin
- public | reminders   | table | 35LbsAdmin
- public | users       | table | 35LbsAdmin
- public | workouts    | table | 35LbsAdmin
-(5 rows)
-```
+## Technology Stack
 
-## 3. Set up test tool
+### Frontend
+- **Frameworks and Libraries:** React.js, Chart.js, Axios, Lucide React, React Router, React Image Gallery
+- **Styling:** Tailwind CSS and custom CSS
 
-Download Postman from [Postman Download Page](https://www.postman.com/downloads/)
+### Backend
+- **Framework:** Node.js with Express.js
+- **Database:** PostgreSQL
+- **Authentication:** JSON Web Tokens (JWT)
+- **Security:** Password hashing using `bcrypt`
 
-## 4. Test Result
+---
 
-### 4.1 User Registration
+## Installation and Setup
 
-1. **Run the server**:
+### Prerequisites
+1. **Node.js:** Download and install from [Node.js official website](https://nodejs.org/).
+2. **PostgreSQL:** Download and install from [PostgreSQL official website](https://www.postgresql.org/download/).
+
+---
+
+### Backend Setup
+
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/Jeffrey-Le/Workout-Tracker
+   cd back-end
    ```
+
+2. **Install Dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Database Setup:**
+   - Create a PostgreSQL user and database:
+     ```sql
+     CREATE USER "35LbsAdmin" WITH PASSWORD 'password';
+     CREATE DATABASE workoutdb OWNER "35LbsAdmin";
+     ```
+   - Run the SQL schema file:
+     ```bash
+     psql -U 35LbsAdmin -d workoutdb -f workoutDB-Setup.sql
+     ```
+
+4. **Configure Environment Variables:**
+   - Create a `.env` file in the `backend` directory with the following:
+     ```
+     DB_HOST=localhost
+     DB_PORT=5432
+     DB_NAME=workoutdb
+     DB_USER=35LbsAdmin
+     DB_PASSWORD=password
+     JWT_SECRET=YourJWTSecret
+     JWT_EXPIRATION=1h
+     ```
+
+5. **Start the Backend Server:**
+   ```bash
    node app.js
    ```
-   
-2. **Check that the server is running** through the web browser:
+
+   The server will run on `http://localhost:5001`.
+
+---
+
+### Frontend Setup
+
+1. **Navigate to the Frontend Directory:**
+   ```bash
+   cd frontend
    ```
-   ipconfig
+
+2. **Install Dependencies:**
+   ```bash
+   npm install
    ```
-   - Find your IPv4 address, e.g., `192.168.0.1`
-   - Go to: `http://192.168.0.1:3000`
-   - You should see the following message: "Welcome to the Workout Tracker App!"
 
-3. **Send a POST request in Postman** to create a new user:
-   - URL: `http://192.168.0.1:3000/register`
-   - Method: `POST`
-   - Body (JSON):
-     ```json
-     {
-       "username": "testuser",
-       "password": "password123",
-       "email": "123@ucla.edu"
-     }
-     ```
+3. **Start the React Development Server:**
+   ```bash
+   npm start
+   ```
 
-4. **Check the response**:
-   - You should receive the following message:
-     ```
-     201 Created: "User registered successfully."
-     ```
+   The app will run on `http://localhost:3000`.
 
-## 5. Set up the React Frontend
+---
 
-Clone the repository for the React frontend app.
-Install React Dependencies:
-```
-$ cd front-end
-$ npx create-react-app workout-track
-$ npm install axios react-router-dom
-$ npm install lucide-react
-$ npm install react-chartjs-2 chart.js
-$ npm install react-image-gallery
-$ npm install react-datepicker
-```
+## Usage
 
-Run the React App: 
-```
-npm start
-```
+1. **Register a User:**
+   - Navigate to the registration page and create an account.
+   - Enter details like username, email, and password.
 
-The app should be available at http://localhost:3001 by default.
+2. **Log Workouts:**
+   - Add workout details, including type, duration, and notes.
+   - View the logged workouts on the dashboard.
+   - Delete the logged workouts on the dashboard.
 
-Verify Connection with Backend:
-- Ensure the backend server is running:
+3. **Search Workouts:**
+   - Use the search interface to filter workouts by type and date.
 
-Check functionality in the browser (e.g., registering a user, logging workouts).
+4. **Track BMI:**
+   - Log weight and track BMI trends over time.
+
+5. **Manage Profile:**
+   - Update user details and upload profile pictures.
+
+---
+
+## Testing the API
+
+### Using Postman
+1. Install [Postman](https://www.postman.com/downloads/).
+2. Test API endpoints:
+   - **Register:**
+     - Endpoint: `POST /register`
+     - Body:
+       ```json
+       {
+         "username": "testuser",
+         "email": "testuser@example.com",
+         "password": "password123",
+         "age": 25,
+         "height": 170
+       }
+       ```
+   - **Login:**
+     - Endpoint: `POST /login`
+     - Body:
+       ```json
+       {
+         "username": "testuser",
+         "password": "password123"
+       }
+       ```
+
+---
+
+## Project Requirements Coverage
+
+### Core Requirements
+- **Dynamic Data Display:** Displays workout logs, BMI trends, and profile updates.
+- **Data Upload and Persistence:** Logs workouts and persists user details.
+- **Search Functionality:** Provides meaningful search through workout logs.
+- **Authentication:** Secure login and JWT-based authentication.
+- **Code Execution:** Contains significant client and server-side logic.
+
+
+---
+
+## Contributors
+
+- **Group Number:** 1
+- **Members:**
+  - Joseph Seok - MisterInsomniac
+  - Wanxin Xiao - feliciathestar
+  - Daniel Luan - daluan217
+  - Jeffrey Le - Jeffrey-Le
+  - Imaan Soltanalipour - wimaan3
+
+---
+
