@@ -1,8 +1,14 @@
+<<<<<<< HEAD:front-end/src/pages/register.js
 import React, { useState } from 'react';
 import './register.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import frameImage from './Frame.png';
+=======
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+>>>>>>> parent of d5047b0e (Added a logo and revised the styles of login and registration pages.):fitness-dashboard-revision/src/pages/register.js
 
 const apiUrl = 'http://localhost:5001';
 
@@ -116,11 +122,14 @@ function Register() {
           </button>
         </div>
       </form>
+<<<<<<< HEAD:front-end/src/pages/register.js
       
       {/* Image below the login form */}
       <div className="image-container2">
         <img src={frameImage} alt="Your Image" className="center-image2" />
       </div>
+=======
+>>>>>>> parent of d5047b0e (Added a logo and revised the styles of login and registration pages.):fitness-dashboard-revision/src/pages/register.js
     </div>
   );
 }

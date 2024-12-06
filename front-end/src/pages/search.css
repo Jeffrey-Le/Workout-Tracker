@@ -1,144 +1,62 @@
-/* Reset some default browser styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+.header {
+    text-align: left;
+  }
+  
+  .searchbar-row {
+    margin-top: -2rem;
+    display: flex;
+    flex-wrap: wrap;
+    padding-right: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  @media (min-width: 768px) {
+    .label-column1 {
+      width: 20%;
+    }
+    .select-column {
+      width: 20%;
+      padding-right: 4rem;
+    }
+  }
+  
+  .label {
+    display: block;
+    font-weight: normal;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .results-container {
+    background-color: #222F59;
+    padding: 2rem;
+    border-radius: 0.75rem;
+  }
+  
+  .list{
+    font-size: 1.25rem;
+    border-collapse: collapse;
+    width: 600px;
+  }
+  
+  .list th{
+    color: white;
+    padding: 8px;
+    text-align: left; 
+  }
+
+
+  .search-button {
+    padding: 8px 16px;
+    margin-left: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #4CAF50;  /* or any color that matches your theme */
+    color: white;
+    cursor: pointer;
 }
 
-/* Set default font and background color for the body */
-body {
-  font-family: "Optima", sans-serif;
-  background-color: #1e1e30; /* Dark theme background */
-  color: white;
-  height: 100vh; /* Ensure the body takes up the full height of the viewport */
-  margin: 0; /* Remove default margin */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Styling for the main container */
-.flex {
-  display: flex;
-  min-height: 100vh;
-  align-items: center;
-  justify-content: center;
-  background-color: #1e1e30; /* Match the dark theme */
-  color: white;
-}
-
-/* Styling for the login card */
-.w-full {
-  width: 100%;
-  max-width: 48rem; /* Increased the card width */
-  padding: 1.5rem 3rem; /* Adjusted padding for a wider layout */
-  background-color: #292946; /* Match sidebar color */
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Card heading styling */
-.text-2xl {
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-/* Label styling */
-.block {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-/* Input field styling */
-input {
-  width: 100%;
-  padding: 0.5rem;
-  border: none;
-  border-radius: 0.25rem;
-  background-color: #383850;
-  color: white;
-  font-size: 1rem;
-}
-
-input:focus {
-  outline: none;
-  border: 1px solid #5e5da5;
-}
-
-/* Button styling */
-button {
-  width: 100%;
-  padding: 0.75rem; /* Slightly reduced padding for a flatter appearance */
-  border: none;
-  border-radius: 0.25rem;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  background-color: #5e5da5; /* Match the purple button style */
-  color: white;
-  transition: background-color 0.2s;
-}
-
-button:hover {
-  background-color: #4b4a88; /* Darker purple on hover */
-}
-
-/* Form field margin adjustments */
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
-.mb-6 {
-  margin-bottom: 1.5rem;
-}
-
-.mb-2 {
-  margin-bottom: 0.5rem;
-}
-
-/* Shadow and rounded styling for the card */
-.rounded {
-  border-radius: 0.5rem;
-}
-
-.shadow-lg {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* Additional spacing utility classes */
-.p-8 {
-  padding: 2rem;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.bg-slate-900 {
-  background-color: #1e1e30; /* Match the body background */
-}
-
-.bg-slate-800 {
-  background-color: #292946; /* Match the dark theme */
-}
-
-.bg-slate-700 {
-  background-color: #383850; /* Match the input field background */
-}
-
-/* Utility classes for text colors */
-.text-white {
-  color: white;
-}
-
-/* Utility classes for buttons */
-.bg-blue-600 {
-  background-color: #5e5da5;
-}
-
-.bg-blue-700 {
-  background-color: #4b4a88;
+.search-button:hover {
+    background-color: #45a049;
 }
