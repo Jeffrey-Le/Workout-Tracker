@@ -86,6 +86,10 @@ cd Workout-Tracker
 
    ```bash
    npm install
+   npm install express --save
+   npm install jsonwebtoken
+   npm install cors
+   npm install bcryptjs
    ```
 
 3. **Database Setup:**
@@ -168,6 +172,13 @@ cd Workout-Tracker
 
    ```bash
    npm install
+   npx create-react-app workout-track
+   npm install axios react-router-dom
+   npm install lucide-react
+   npm install react-chartjs-2 chart.js
+   npm install react-image-gallery
+   npm install react-datepicker
+   
    ```
 
 3. **Start the React Development Server:**
