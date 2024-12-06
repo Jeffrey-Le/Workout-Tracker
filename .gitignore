@@ -6,6 +6,19 @@ __pycache__/
 # C extensions
 *.so
 
+# Ignore node_modules in all subdirectories
+**/node_modules/
+
+# Ignore system and editor files
+.DS_Store
+*.log
+logs/
+.env
+
+# Ignore build artifacts (optional)
+build/
+dist/
+
 # Distribution / packaging
 .Python
 build/
