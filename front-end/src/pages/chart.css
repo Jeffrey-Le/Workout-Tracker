@@ -1,0 +1,16 @@
+.activity-tracker{
+    background-color: #222F59;
+}
+
+.title{
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 0.1rem;
+}
+
+.year{
+    font-size: 1.1rem;
+    color: #7985a9;
+    margin-bottom: 0.1rem;
+}

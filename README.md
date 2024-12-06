@@ -11,6 +11,7 @@ npm install
 npm install express --save
 npm install jsonwebtoken
 npm install cors
+npm install bcryptjs
 ```
 
 ## 2. Set up the database
