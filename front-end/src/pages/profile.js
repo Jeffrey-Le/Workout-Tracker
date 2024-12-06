@@ -89,7 +89,7 @@ const Profile = () => {
   };
 
   // Token and User
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [user, setUser] = useState(null);
   
   // Fetch Data
@@ -157,14 +157,16 @@ const Profile = () => {
   }
 
   useEffect(() => {
-    const cachedToken = localStorage.getItem('token');
-    if (cachedToken)
-      setToken(cachedToken);
-
     const fetchUser = async () => {
       try {
+        if (!token)
+          {
+            console.log("Token doesn't exist yet.");
+            return;
+          }
+
         const res = await axios.get(`${apiUrl}/profile`, {
-          headers: { Authorization: cachedToken },
+          headers: { Authorization: token },
         });
   
         const user = res.data;
