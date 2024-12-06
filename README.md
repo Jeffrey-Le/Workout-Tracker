@@ -69,7 +69,7 @@ postgres=# \q
 Run the SQL schema: Execute the provided workoutDB-Setup.sql file to create tables and indexes.
 ```
 $ psql -U 35LbsAdmin -d workoutdb -f workoutDB-Setup.sql
-Password for user 35LbsAdmin:
+Password for user 35LbsAdmin: 35LbsA+
 psql:workoutDB-Setup.sql:1: NOTICE:  table "reminders" does not exist, skipping
 DROP TABLE
 psql:workoutDB-Setup.sql:2: NOTICE:  table "plans" does not exist, skipping
