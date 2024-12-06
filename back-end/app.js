@@ -106,20 +106,19 @@ app.post("/workouts", authenticateToken, async (req, res) => {
   const { workoutType, duration, distance, calories, notes } = req.body;
 
   try {
-    // Ensure notes is either null or a string, and pass an empty JSON object if no details are provided
     const details = notes ? JSON.stringify({ notes }) : '{}';
-
-    // Insert the workout data into the database
-    await pool.query(
-      "INSERT INTO workouts (user_id, workout_type, duration, distance, calories, details) VALUES ($1, $2, $3, $4, $5, $6)",
+    const result = await pool.query(
+      `INSERT INTO workouts (user_id, workout_type, duration, distance, calories, details) 
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
       [req.user.user_id, workoutType, duration, distance, calories, details]
     );
-    res.status(201).send("Workout logged successfully.");
+    res.status(201).json(result.rows[0]); // Return the newly created workout
   } catch (error) {
     console.error("Error logging workout:", error);
     res.status(500).send("Internal server error.");
   }
 });
+
 
 // Get user's workouts
 app.get("/workouts", authenticateToken, async (req, res) => {
