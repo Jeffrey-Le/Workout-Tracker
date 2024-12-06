@@ -11,7 +11,8 @@
   
   /* Form Styling */
   .form-container form {
-    width: calc(2 * 33.33vh); /* Width is three times the height */
+    width: calc(3 * 33.33vh) !important; /* Width is three times the height */
+    max-width: 500px; 
     height: 45vh; /* Fixed height relative to viewport */
     padding: 2rem;
     background-color: #292946;
@@ -19,7 +20,11 @@
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-between; 
+    max-width: 5000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   /* Form Row Styling */

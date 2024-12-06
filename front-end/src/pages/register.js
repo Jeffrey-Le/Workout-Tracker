@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import './register.css'; // Importing the custom CSS file
+import React, { useState } from 'react';
+import './register.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import frameImage from './Frame.png'; // Importing the image
+import frameImage from './Frame.png';
 
 const apiUrl = 'http://localhost:5001';
 
-// Register Component
 function Register() {
   const [formData, setFormData] = useState({
     username: '',
@@ -16,24 +15,28 @@ function Register() {
     gender: '',
     height: '',
   });
+
   const navigate = useNavigate();
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await axios.post(`${apiUrl}/register`, formData);
       alert('User registered successfully');
-      navigate('/login'); // Redirect to login
+      navigate('/login');
     } catch (error) {
-      alert('Registration failed: ' + error.response.data);
+      alert('Registration failed: ' + (error.response?.data || 'Unknown error'));
     }
   };
 
   return (
     <div className="form-container">
-      <form onSubmit={handleSubmit} className="form-container">
+      {/* Remove duplicate form-container class from form */}
+      <form onSubmit={handleSubmit}>
         <div className="form-row">
           <div className="form-column">
             <label className="label">Username</label>
@@ -107,16 +110,17 @@ function Register() {
             />
           </div>
         </div>
-        <div className="form-column">		
-        <button type="submit" className="w-1/2 bg-blue-600 text-white center rounded p-2 mb-4 hover:bg-blue-700">
-		  Register
-		</button>
+        <div className="form-column">
+          <button type="submit" className="button">
+            Register
+          </button>
         </div>
       </form>
-      		{/* Image below the login form */}
-				<div className="image-container2">
-					<img src={frameImage} alt="Your Image" className="center-image2" />
-				</div>
+      
+      {/* Image below the login form */}
+      <div className="image-container2">
+        <img src={frameImage} alt="Your Image" className="center-image2" />
+      </div>
     </div>
   );
 }
