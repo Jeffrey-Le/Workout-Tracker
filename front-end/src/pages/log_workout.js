@@ -94,23 +94,6 @@ const LogWorkout = () => {
                 <h2 className="header-text">New Entry</h2>
             </div>
 
-            {/* Display previously logged workouts */}
-            <div className="logged-workouts">
-                <h3>Logged Workouts:</h3>
-                <ul>
-                    {workouts.length > 0 ? (
-                        workouts.map((workout) => (
-                            <li key={workout.workout_id}>
-                                <strong>{workout.workout_type}</strong> - {workout.duration} mins - {workout.distance} miles
-                                {workout.details.notes && ` (Notes: ${workout.details.notes})`}
-                            </li>
-                        ))
-                    ) : (
-                        <p>No workouts logged yet.</p>
-                    )}
-                </ul>
-            </div>
-
             {/* Form to log a new workout */}
             <div className="form-container">
                 <form onSubmit={handleSubmit} className="space-y-6">
