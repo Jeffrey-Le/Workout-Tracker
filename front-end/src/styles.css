@@ -1,0 +1,187 @@
+
+
+/* Reset some default browser styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+/* Set default font and background color for the body */
+body {
+    font-family: Optima;
+    background-color: #000c31e6; 
+    color: white;
+}
+
+/* Styling for the main container */
+.flex {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Styling for the sidebar */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 18rem; /* w-64 */
+    padding: 2rem; /* p-6 */
+    background-color: #222F59; /* bg-slate-900 */
+}
+
+.sidebar .logo {
+    justify-content: center;
+    margin-top: 2rem; /* mt-8 */
+    display: flex;
+}
+
+/* ADD LOGO ICON */
+.sidebar .logo-icon {
+    width: 4rem; 
+    height: 4rem; 
+    background-color: #334155; /* bg-slate-700 */
+    border-radius: 50%; /* rounded-full */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar .add-workout-btn {
+    width: 100%; 
+    height: 4rem; /* h-12 */
+    background-color: #000c31e6; 
+    font-size: 1.3rem;
+    color: white;
+    padding: 0.75rem 1rem; /* py-3 px-4 */
+    border-radius: 0.5rem; /* rounded-lg */
+    margin-top: 5rem; /* mb-8 */
+    border: none;
+    cursor: pointer;
+}
+
+.sidebar .add-workout-btn:hover {
+    transform: scale(1.03);
+}
+
+.sidebar .nav {
+    margin-top: 4rem; /* mt-8 */
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem; /* space-y-4 */
+}
+
+.sidebar .nav-item {
+    display: flex;
+    font-size: 1.2rem;
+    font-weight: 500 ;
+    align-items: center;
+    gap: 1rem; 
+    color: #f2f2f2; 
+    width: 100%; 
+    cursor: pointer;
+}
+
+.sidebar .nav-item:hover {
+    color: rgb(255, 251, 192); 
+}
+
+.sidebar .logout-btn {
+    display: flex;
+    gap: 0.5rem; 
+    color: #cbd5e0;
+    position: absolute;
+    bottom: 2rem; 
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.sidebar .logout-btn:hover {
+    color: rgb(255, 251, 192); 
+}
+
+/* Styling for the main content area */
+.main-content {
+    flex: 1;
+    padding: 5rem; 
+}
+
+.main-content .header {
+    margin-top: -1rem;
+    margin-bottom: 2.5rem; 
+}
+
+.main-content .welcome-text {
+    font-size: 1.5rem; /* text-2xl */
+
+}
+
+.main-content .activities-text {
+    font-size: 2rem; /* text-3xl */
+    margin-top: 0.5rem; /* mt-2 */
+}
+
+/* Styling for the activity cards container */
+.activity-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem; /* gap-6 */
+}
+
+/* small screen display 2 column */
+@media (min-width: 768px) {
+.activity-cards {
+    grid-template-columns: repeat(2, 1fr); 
+}
+}
+
+/* large screen display 3 column */
+@media (min-width: 1024px) {
+.activity-cards {
+    grid-template-columns: repeat(3, 1fr); 
+}
+}
+
+/* Styling for individual activity cards */
+.activity-card {
+    background-color: #222F59; 
+    padding: 1.5rem; 
+    border-radius: 1rem; 
+}
+
+.activity-card .activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem; 
+}
+
+.activity-card .activity-date {
+    color: #94a3b8; 
+    font-size: 0.875rem; 
+}
+
+.activity-card .activity-type {
+    font-size: 1.7rem; /* text-2xl */
+
+}
+
+.activity-card .activity-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem; /* gap-4 */
+}
+
+.activity-card .metric {
+    display: flex;
+    flex-direction: column;
+}
+
+.activity-card .metric-label {
+    color: #94a3b8; 
+    font-size: 0.875rem; 
+}
+
+.activity-card .metric-value {
+    font-size: 1.125rem; 
+}
