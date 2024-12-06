@@ -7,6 +7,7 @@ Download and install Node.js from [Node.js Download Page](https://nodejs.org/en/
 
 Install the required packages:
 ```
+cd back-end
 npm install
 npm install express --save
 npm install jsonwebtoken
@@ -24,7 +25,7 @@ https://www.postgresql.org/download/
 If using homebrew, do the following on your shell to start PostgreSQL:
 ```
 //Install postgreSQL through Homebrew
-$ cd backend-revision
+$ cd back-end
 $ brew install postgresql@14
 
 //Add PostgreSQL to your PATH
@@ -162,17 +163,23 @@ Download Postman from [Postman Download Page](https://www.postman.com/downloads/
 
 Clone the repository for the React frontend app.
 Install React Dependencies:
- ```
-npx create-react-app workout-track
-npm install axios react-router-dom
-npm install lucide-react
-npm install react-chartjs-2 chart.js
-npm install react-image-gallery
-npm install react-datepicker
-   ```
+```
+$ cd front-end
+$ npx create-react-app workout-track
+$ npm install axios react-router-dom
+$ npm install lucide-react
+$ npm install react-chartjs-2 chart.js
+$ npm install react-image-gallery
+$ npm install react-datepicker
+```
 
-Run the React App: npm start
+Run the React App: 
+```
+npm start
+```
+
 The app should be available at http://localhost:3001 by default.
+
 Verify Connection with Backend:
 - Ensure the backend server is running:
 
