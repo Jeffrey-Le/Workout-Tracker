@@ -29,7 +29,6 @@ class ApiService {
       // Return the response data
       return response.data;
     } catch (error) {
-      console.error('Error fetching workouts:', error);
 
       // Handle Axios-specific error objects
       if (error.response) {

@@ -41,7 +41,6 @@ const Search = () => {
             });
             setWorkoutResults(response.data);
         } catch (error) {
-            console.error('Error fetching workouts:', error);
             setSearchError('Failed to fetch workouts. Please try again.');
             setWorkoutResults([]);
         } finally {

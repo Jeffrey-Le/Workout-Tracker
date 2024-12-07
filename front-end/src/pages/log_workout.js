@@ -40,7 +40,6 @@ const LogWorkout = () => {
                 });
                 setWorkouts(response.data);
             } catch (error) {
-                console.error('Error fetching workouts:', error);
                 alert('Failed to fetch workouts. Please try again.');
             }
         };
@@ -83,7 +82,6 @@ const LogWorkout = () => {
             alert('Workout logged successfully!');
             navigate('/');
         } catch (error) {
-            console.error('Error logging workout:', error);
             alert('Failed to log workout. Please try again.');
         } finally {
             setLoading(false);

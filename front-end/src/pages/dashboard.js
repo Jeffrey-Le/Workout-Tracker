@@ -25,7 +25,6 @@ const Dashboard = () => {
       setError(null);
 
       if (!token) {
-        console.error('No token found. Please log in.');
         setLoading(false);
         return;
       }
@@ -64,7 +63,6 @@ const Dashboard = () => {
 
         setActivities(formattedActivities);
       } catch (error) {
-        console.error('Error fetching data:', error);
         setError('Failed to fetch data. Please try again.');
       } finally {
         // Stop loading
@@ -77,7 +75,6 @@ const Dashboard = () => {
 
   const deleteWorkout = async (workoutId) => {
     if (!token) {
-      console.error('No token found. Please log in.');
       return;
     }
     try {
@@ -91,7 +88,6 @@ const Dashboard = () => {
 
       alert('Workout deleted successfully');
     } catch (error) {
-      console.error('Error deleting workout:', error);
       alert('Failed to delete workout. Please try again.');
     }
   };

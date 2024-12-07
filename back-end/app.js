@@ -74,7 +74,6 @@ app.post("/register", async (req, res) => {
     );
     res.status(201).send("User registered successfully.");
 	} catch (error) {
-		console.error(error);
 		res.status(500).send("Internal server error.");
 	}
 });
@@ -96,7 +95,6 @@ app.post("/login", async (req, res) => {
         res.json({ token });
       }
 		} catch (error) {
-		console.error(error);
 		res.status(500).send("Internal server error.");
 	}
 });
@@ -114,7 +112,6 @@ app.post("/workouts", authenticateToken, async (req, res) => {
     );
     res.status(201).json(result.rows[0]); // Return the newly created workout
   } catch (error) {
-    console.error("Error logging workout:", error);
     res.status(500).send("Internal server error.");
   }
 });
@@ -132,7 +129,6 @@ app.delete("/workouts/:id", authenticateToken, async (req, res) => {
     }
     res.status(200).send("Workout deleted successfully.");
   } catch (error) {
-    console.error("Error deleting workout:", error);
     res.status(500).send("Internal server error.");
   }
 });
@@ -147,7 +143,6 @@ app.get("/workouts", authenticateToken, async (req, res) => {
 		);
 		res.json(userWorkouts.rows);
 	} catch (error) {
-		console.error(error);
 		res.status(500).send("Internal server error.");
 	}
 });
@@ -176,7 +171,6 @@ app.get("/workouts/search", authenticateToken, async (req, res) => {
         const filteredWorkouts = await pool.query(query, params);
         res.json(filteredWorkouts.rows);
     } catch (error) {
-        console.error(error);
         res.status(500).send("Internal server error.");
     }
 });
@@ -191,7 +185,6 @@ app.post("/bmi", authenticateToken, async (req, res) => {
 		);
 		res.status(201).send("BMI recorded successfully.");
 	} catch (error) {
-		console.error(error);
 		res.status(500).send("Internal server error.");
 	}
 });
@@ -205,7 +198,6 @@ app.get("/bmi", authenticateToken, async (req, res) => {
 		);
 		res.json(bmiHistory.rows);
 	} catch (error) {
-		console.error(error);
 		res.status(500).send("Internal server error.");
 	}
 });
@@ -246,7 +238,6 @@ app.get("/bmi/graph", authenticateToken, async (req, res) => {
           const monthlyAverages = Array(12).fill(null);
           averages.forEach(({ month, average_bmi }) => {
               monthlyAverages[month - 1] = average_bmi; // Correct month index is month - 1
-              console.log(`Month: ${month}, Average BMI: ${average_bmi}`);
           });
 
           // Add the data for the current year to the response object
@@ -255,7 +246,6 @@ app.get("/bmi/graph", authenticateToken, async (req, res) => {
 
       res.status(200).json(bmiDataByYear);
   } catch (error) {
-      console.error('Error fetching BMI data:', error);
       res.status(500).send('Internal Server Error');
   }
 });
@@ -272,7 +262,6 @@ app.get("/profile", authenticateToken, async (req, res) => {
     }
     res.json(user.rows[0]);
   } catch (error) {
-    console.error("Error fetching profile:", error);
     res.status(500).send("Internal server error.");
   }
 });
@@ -287,7 +276,6 @@ app.put("/profile", authenticateToken, async (req, res) => {
     );
     res.status(200).send("Profile updated successfully.");
   } catch (error) {
-    console.error("Error updating profile:", error);
     res.status(500).send("Internal server error.");
   }
 });

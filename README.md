@@ -223,10 +223,8 @@ Before setting up the **Workout Tracker App**, ensure that your system meets the
      ```
    - **Important Notes:**
      - **Security:** 
-       - Ensure that `DB_PASSWORD` and `JWT_SECRET` are strong and unique, especially in a production environment.
+       - Ensure that `DB_USER`, `DB_PASSWORD`, and `JWT_SECRET` are strong and unique, especially in a production environment.
        - **Do not** commit the `.env` file to version control. It's recommended to add `.env` to your `.gitignore` file.
-     - **Database Credentials:**
-       - Ensure that `POSTGRES_USER`, `POSTGRES_PASSWORD`, and other database credentials match those expected by your PostgreSQL setup.
 
 3. **Save and Exit:**
    - In `nano`, press `CTRL + O` to save and `CTRL + X` to exit.
@@ -252,6 +250,7 @@ Before setting up the **Workout Tracker App**, ensure that your system meets the
    - **What This Command Does:**
      - **`--build`:** Forces Docker to rebuild the images, ensuring that any changes are incorporated.
      - **`up`:** Builds, (re)creates, starts, and attaches to containers for a service.
+     If you face issues with the port being in use already when you are running multiple instances just go to line 14 in docker-compose.yml and follow its comment instructions 
 
 3. **Understanding the Output:**
    - **Database (`workout_tracker_db`):**

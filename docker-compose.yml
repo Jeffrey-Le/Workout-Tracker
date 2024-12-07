@@ -11,7 +11,7 @@ services:
       - db_data:/var/lib/postgresql/data
       - ./back-end/workoutDB-Setup.sql:/docker-entrypoint-initdb.d/workoutDB-Setup.sql
     ports:
-      - "5432:5432"
+      - "5433:5432" # Change the left number 5433 if a port is already being used, you can keep changing it.
 
   backend:
     build:
