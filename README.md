@@ -202,7 +202,7 @@ Before setting up the **Workout Tracker App**, ensure that your system meets the
    ```
 
 2. **Add Configuration Variables:**
-   - Paste the following content into the `.env` file:
+   - Paste the following the exact content into the `.env` file of your directory:
      ```plaintext
      # Database Configuration
      POSTGRES_USER=35LbsAdmin
@@ -221,10 +221,6 @@ Before setting up the **Workout Tracker App**, ensure that your system meets the
      # Frontend Configuration
      REACT_APP_API_URL=http://localhost:5001
      ```
-   - **Important Notes:**
-     - **Security:** 
-       - Ensure that `DB_USER`, `DB_PASSWORD`, and `JWT_SECRET` are strong and unique, especially in a production environment.
-       - **Do not** commit the `.env` file to version control. It's recommended to add `.env` to your `.gitignore` file.
 
 3. **Save and Exit:**
    - In `nano`, press `CTRL + O` to save and `CTRL + X` to exit.
@@ -285,6 +281,7 @@ Before setting up the **Workout Tracker App**, ensure that your system meets the
    - **Log In:**
      - After registration, navigate to the login page.
      - Enter your credentials to access the dashboard.
+     - Make sure to log out after you are done.
 
 ---
 
